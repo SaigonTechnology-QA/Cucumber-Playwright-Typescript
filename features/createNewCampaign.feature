@@ -51,4 +51,34 @@ Feature: Create New Campaign
       | Attitude              |
       | English               |
 
+  @CL-0003 @CL-0003-2
+  Scenario Outline: : As a Campaign Manager, I can not add new campaign when leave 1 required field blank
+    Given I sign in with role as "Campaign Manager 1"
+    When I go to Campaigns page
+    Then The Recruitment Page Should Be Displayed
+    And I click on "Add New Campaign" button
+    And I create a new campaign all required fields except "<fieldName>" field
+    Then  the "This field is required" message should be displayed next to "<fieldName>" field
 
+    Examples:
+      | fieldName             |
+      | Name                  |
+      | Target                |
+      | Priority              |
+      | Request Date          |
+      | Deadline              |
+      | Job Skill Interviewer |
+      | Department            |
+      | Job title             |
+      | Contract type         |
+      | Difficulty Level      |
+      | Job Description       |
+      | Job Requirement       |
+      | Primary Skills        |
+      | Levels                |
+      | Location              |
+      | Salary                |
+      | Knowledge             |
+      | Skill/Experience      |
+      | Attitude              |
+      | English               |

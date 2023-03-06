@@ -1,9 +1,15 @@
 import campaignData from '../resources/data/campaign.json';
 import userData from '../resources/data/user.json';
+import candidateData from '../resources/data/candidate.json';
 
 export class DataUtils {
   getCampaignDataByType(type: string) {
     const extractData = campaignData.filter((key) => key.type === type);
+    return extractData[0];
+  }
+
+  getCandidateDataByType(type: string) {
+    const extractData = candidateData.filter((key) => key.type === type);
     return extractData[0];
   }
 

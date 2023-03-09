@@ -64,14 +64,37 @@ export class CommonPage {
   }
   async selectDropdownValue(dropDownName: string, optionValue: string) {
     const dropDownNameXpath = replace(
-      '//label[contains(text(),"@dropDownName")]',
+      '//label[starts-with(normalize-space(text()),"@dropDownName")]',
       '@dropDownName',
       dropDownName,
     );
     const dropDownNameFieldXpath =
       dropDownNameXpath + '/following-sibling::*//div[@class="search-box form-control d-flex"]';
     const drpLocationOptionXpath = replace(
-      dropDownNameXpath + '/following-sibling::*//li[text()=" optionValue "]',
+      dropDownNameXpath + '/following-sibling::*//li[normalize-space(text())="optionValue"]',
+      'optionValue',
+      optionValue,
+    );
+
+    //Open dropdown
+    await this.page.locator(dropDownNameFieldXpath).click();
+
+    //Select option value
+    await this.page.locator(drpLocationOptionXpath).click();
+
+    //Close Dropdown
+    await this.page.locator(dropDownNameXpath).click();
+  }
+  async selectDropdonwValueForNotMandatoryFields(dropDownName: string, optionValue: string) {
+    const dropDownNameXpath = replace(
+      '//label[normalize-space()="@dropDownName"]',
+      '@dropDownName',
+      dropDownName,
+    );
+    const dropDownNameFieldXpath =
+      dropDownNameXpath + '/following-sibling::*//div[@class="search-box form-control d-flex"]';
+    const drpLocationOptionXpath = replace(
+      dropDownNameXpath + '/following-sibling::*//li[normalize-space()="optionValue"]',
       'optionValue',
       optionValue,
     );

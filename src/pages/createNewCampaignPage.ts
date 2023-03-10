@@ -8,10 +8,12 @@ export class CreateCampaignPage {
 
   commonPage: CommonPage;
   readonly txtName: Locator;
+  readonly txtPurpose: Locator;
   readonly txtJobTitle: Locator;
   readonly txtJobDesc: Locator;
   readonly txtJobReq: Locator;
   readonly txtSalary: Locator;
+  readonly txtSpecialBonusDetails: Locator;
   readonly txtKnowledge: Locator;
   readonly txtSkill: Locator;
   readonly txtAtt: Locator;
@@ -19,6 +21,7 @@ export class CreateCampaignPage {
   readonly txtTarger: Locator;
   readonly txtRequestDate: Locator;
   readonly txtDeadline: Locator;
+  readonly txtTAInterviewQuestions: Locator;
 
   readonly btnSave: Locator;
 
@@ -26,6 +29,7 @@ export class CreateCampaignPage {
     this.page = page;
     this.commonPage = new CommonPage(this.page, iCustomWorld);
     this.txtName = page.getByLabel('Name *');
+    this.txtPurpose = page.locator('[formcontrolname=purpose]');
     this.txtJobTitle = page.locator(
       '//label[contains(text(),"Job title")]/following-sibling::input',
     );
@@ -36,6 +40,7 @@ export class CreateCampaignPage {
       '//label[contains(text(),"Job Requirement")]/following-sibling::*//div[@role="textbox"]',
     );
     this.txtSalary = page.locator('//label[contains(text(),"Salary")]/following-sibling::input');
+    this.txtSpecialBonusDetails = page.locator('[formcontrolname=specialBonusDetails]');
     this.txtKnowledge = page.locator(
       '//label[contains(text(),"Knowledge")]/following-sibling::*//div[@role="textbox"]',
     );
@@ -55,6 +60,9 @@ export class CreateCampaignPage {
     );
     this.txtDeadline = page.locator(
       '//label[contains(text(),"Deadline")]/following-sibling::*//input',
+    );
+    this.txtTAInterviewQuestions = page.locator(
+      '//label[contains(text(),"TA Interview Questions")]/following-sibling::*//div[@role="textbox"]',
     );
   }
 
@@ -193,11 +201,86 @@ export class CreateCampaignPage {
         break;
       }
     }
-
+  }
+  async clickSave() {
     //Save
     await this.btnSave.click();
   }
   async createNewCampaignWithRequiredFields() {
     await this.createNewCampaignWithExceptField('');
+    await this.clickSave();
+  }
+  async createNewCampaignWithFullFields(emptyFieldName: string) {
+    const dataUtils = new DataUtils();
+    const campaignData = await dataUtils.getCampaignDataByType('full_data').generalInfo;
+    const campaignReDetailData = await dataUtils.getCampaignDataByType('full_data')
+      .recruiterDetails;
+    const campaignJobData = await dataUtils.getCampaignDataByType('full_data').jobDetails;
+    const campaignInterviewquestionData = await dataUtils.getCampaignDataByType('full_data')
+      .sampleInterviewQuestions;
+
+    //Manager
+    if (emptyFieldName !== 'Manager') {
+      await this.commonPage.selectDropdonwValueForNotMandatoryFields(
+        'Manager',
+        campaignData.manager,
+      );
+    }
+    //Purpose
+    await this.txtPurpose.fill(campaignData.purpose != undefined ? campaignData.purpose : '');
+
+    //Projects
+    if (emptyFieldName !== 'Projects') {
+      await this.commonPage.selectDropdonwValueForNotMandatoryFields(
+        'Projects',
+        campaignData.projects != undefined ? campaignData.projects : '',
+      );
+    }
+
+    //TA Executive
+    if (emptyFieldName !== 'TA Executive') {
+      process.env.userRole !== undefined ? process.env.userRole : '';
+      if (process.env.userRole == 'TA Manager') {
+        await this.commonPage.selectDropdonwValueForNotMandatoryFields(
+          'TA Executive',
+          campaignReDetailData.taExecutive != undefined ? campaignReDetailData.taExecutive : '',
+        );
+      }
+    }
+    //TA Executive
+    if (emptyFieldName !== 'Primary TA Executive') {
+      if (process.env.userRole == 'TA Manager') {
+        await this.commonPage.selectDropdonwValueForNotMandatoryFields(
+          'Primary TA Executive',
+          campaignReDetailData.primaryTAExecutive != undefined
+            ? campaignReDetailData.primaryTAExecutive
+            : '',
+        );
+      }
+    }
+    //Special Bonus
+    if (emptyFieldName !== 'Special Bonus') {
+      await this.commonPage.selectDropdonwValueForNotMandatoryFields(
+        'Special Bonus',
+        campaignJobData.specialBonus != undefined ? campaignJobData.specialBonus : '',
+      );
+    }
+    //Special Bonus Details
+    await this.txtSpecialBonusDetails.fill(
+      campaignJobData.specialBonusDetails != undefined ? campaignJobData.specialBonusDetails : '',
+    );
+
+    //Special Bonus Details
+    await this.txtTAInterviewQuestions.fill(
+      campaignInterviewquestionData.taInterviewQuestions != undefined
+        ? campaignInterviewquestionData.taInterviewQuestions
+        : '',
+    );
+    await this.createNewCampaignWithExceptField('');
+  }
+
+  async createNewCampaignWithFullFieldsMain() {
+    await this.createNewCampaignWithFullFields('');
+    await this.clickSave();
   }
 }

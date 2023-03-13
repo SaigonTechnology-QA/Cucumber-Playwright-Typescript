@@ -46,6 +46,7 @@ When(
     const page = this.page!;
     const createCampaignPage = new CreateCampaignPage(page, this);
     await createCampaignPage.createNewCampaignWithExceptField(fieldName);
+    await createCampaignPage.clickSave();
   },
 );
 Then(
@@ -57,3 +58,9 @@ Then(
       await commonPage.checkErrorMessagebyFieldName(fieldName, errorMessage);
   },
 );
+
+When('I create a new campaign with the full fields', async function (this: ICustomWorld) {
+  const page = this.page!;
+  const createCampaignPage = new CreateCampaignPage(page, this);
+  await createCampaignPage.createNewCampaignWithFullFieldsMain();
+});

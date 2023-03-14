@@ -36,6 +36,7 @@ export class CommonPage {
   }
 
   async clickCommonButton(text: 'Yes' | 'Cancel') {
+    await this.delay(500);
     switch (text) {
       case 'Yes': {
         await this.btnYes.click();
@@ -46,6 +47,8 @@ export class CommonPage {
         break;
       }
     }
+    await this.delay(1000);
+    await this.page.waitForLoadState();
   }
   async checkErrorMessagebyFieldName(fieldName: string, errorMessage: string) {
     await expect(
@@ -107,7 +110,7 @@ export class CommonPage {
     //Close Dropdown
     await this.page.locator(dropDownNameXpath).click();
   }
-  async checkTableCellValueByColumnName(cellValue: string, columnName: string) {
+  async checkTableCellValueByColumnName(cellValue: string, columnName = 'Name') {
     let columnIndex = -1;
     let cellFound = false;
     const tableColumnXpath = '//table//th';
@@ -134,6 +137,9 @@ export class CommonPage {
         const realRowValue = await value.textContent();
         if (realRowValue?.trim() == cellValue) {
           cellFound = true;
+          await value.scrollIntoViewIfNeeded();
+          await this.screenshotThenAttachToReport();
+          expect(realRowValue?.trim()).toEqual(cellValue);
           break;
         }
       }

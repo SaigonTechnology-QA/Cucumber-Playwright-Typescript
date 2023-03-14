@@ -1,6 +1,7 @@
 import { ICustomWorld } from './custom-world';
 import { config } from './config';
 import { DataUtils } from './../utils/dataUtils';
+import { CampaignPage } from '../pages/campaignPage';
 import { Before, After, BeforeAll, AfterAll, Status, setDefaultTimeout } from '@cucumber/cucumber';
 import {
   chromium,
@@ -53,10 +54,9 @@ Before(async function (this: ICustomWorld, { pickle }: ITestCaseHookParameter) {
   this.context = await browser.newContext({
     acceptDownloads: true,
     recordVideo: process.env.PWVIDEO ? { dir: 'screenshots' } : undefined,
-    viewport: { width: 1200, height: 800 },
+    viewport: null,
   });
 
-  await this.context.tracing.start({ screenshots: true, snapshots: true });
   this.page = await this.context.newPage();
   this.page.on('console', async (msg: ConsoleMessage) => {
     if (msg.type() === 'log') {
@@ -82,12 +82,15 @@ After(async function (this: ICustomWorld, { result }: ITestCaseHookParameter) {
         path: `screenshots/screenshot-${imageName}.png`,
       });
       image && (await this.attach(image, 'image/png'));
-      await this.context?.tracing.stop({
-        path: `${tracesDir}/${this.testName}-${
-          this.startTime?.toISOString().split('.')[0]
-        }trace.zip`,
-      });
     }
+  }
+
+  const newCampaignName =
+    process.env.newCampaignName !== undefined ? process.env.newCampaignName : '';
+  if (newCampaignName !== '') {
+    const page = this.page!;
+    const campaignPage = new CampaignPage(page, this);
+    await campaignPage.campaignTeardown(newCampaignName);
   }
   await this.page?.close();
   await this.context?.close();

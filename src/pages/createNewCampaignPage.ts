@@ -205,6 +205,7 @@ export class CreateCampaignPage {
   async clickSave() {
     //Save
     await this.btnSave.click();
+    await this.page.waitForLoadState();
   }
   async createNewCampaignWithRequiredFields() {
     await this.createNewCampaignWithExceptField('');

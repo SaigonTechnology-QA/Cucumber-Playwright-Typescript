@@ -17,4 +17,5 @@ export const config = {
   alwaysScreenshot,
   BASE_URL: 'https://uat.recruitment.saigontechnology.vn/',
   IMG_THRESHOLD: { threshold: 0.4 },
+  UPLOAD_FOLDER: 'uploadFiles',
 };

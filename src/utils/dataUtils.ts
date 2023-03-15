@@ -28,4 +28,11 @@ export class DataUtils {
     const sec = date.getSeconds();
     return `${year}${month}${day}-${hour}${min}${sec}`;
   }
+  async getEmail() {
+    return 'Auto' + (await this.getDateString()) + '@gmail.com';
+  }
+  async getPhoneNumber() {
+    const timestamp = Date.now().toString();
+    return '0' + timestamp.slice(-9);
+  }
 }

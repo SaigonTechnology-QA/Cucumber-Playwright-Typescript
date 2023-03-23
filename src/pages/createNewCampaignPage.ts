@@ -24,7 +24,7 @@ export class CreateCampaignPage {
   readonly txtTAInterviewQuestions: Locator;
 
   readonly btnSave: Locator;
-
+  readonly btnCancel: Locator;
   constructor(page: Page, iCustomWorld: ICustomWorld) {
     this.page = page;
     this.commonPage = new CommonPage(this.page, iCustomWorld);
@@ -54,6 +54,7 @@ export class CreateCampaignPage {
       '//label[contains(text(),"English")]/following-sibling::*//div[@role="textbox"]',
     );
     this.btnSave = page.locator('//button[contains(text()," Save") and contains(text(),"Close") ]');
+    this.btnCancel = page.locator('//button[contains(text(),"Cancel") ]');
     this.txtTarger = page.locator('//label[contains(text(),"Target")]/following-sibling::input');
     this.txtRequestDate = page.locator(
       '//label[contains(text(),"Request Date")]/following-sibling::*//input',
@@ -207,6 +208,10 @@ export class CreateCampaignPage {
     await this.btnSave.click();
     await this.page.waitForLoadState();
   }
+  async clickCancel() {
+    //Save
+    await this.btnCancel.click();
+  }
   async createNewCampaignWithRequiredFields() {
     await this.createNewCampaignWithExceptField('');
     await this.clickSave();
@@ -282,6 +287,19 @@ export class CreateCampaignPage {
 
   async createNewCampaignWithFullFieldsMain() {
     await this.createNewCampaignWithFullFields('');
+    await this.clickSave();
+  }
+
+  async createNewCampaignWithCampaignName(campaignName: string) {
+    await this.createNewCampaignWithExceptField('');
+    const dataUtils = new DataUtils();
+    const dateString = await dataUtils.getDateString();
+    const newCampaignName = campaignName + ' ' + dateString;
+    process.env.newCampaignName = newCampaignName;
+
+    await this.txtName.clear();
+    await this.txtName.fill(newCampaignName);
+
     await this.clickSave();
   }
 }

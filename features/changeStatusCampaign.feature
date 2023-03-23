@@ -6,7 +6,7 @@ Feature: Change Status Campaign
     Given I sign in with role as "Campaign Manager 1"
     When I go to Campaigns page
     And I click on "Add New Campaign" button
-    And I create a new campaign with the Manager field is user login successfully
+    And I create a new campaign with the Manager field is fullname of current login user
     And I click on "Draft" tab
     And I click on "Submit" button in the hamburger menu of existing campaign
     And I click on "Yes" button on the Comfirm modal

@@ -14,6 +14,7 @@ export class CampaignPage {
   readonly itemCampaignList_campaignName: Locator;
   readonly btnShowActions: Locator;
   readonly btnDeleteCampaign: Locator;
+  readonly txtErrorExistCampaignMsg: Locator;
 
   readonly btnCloseCampaign: Locator;
 
@@ -30,6 +31,9 @@ export class CampaignPage {
     this.itemCampaignList = page.locator('//tr[@class="ng-star-inserted"]');
     this.btnShowActions = page.locator('//button[@title="Click to show actions"]');
     this.btnDeleteCampaign = page.locator('//button/span[text()="Delete campaign"]');
+    this.txtErrorExistCampaignMsg = page.getByRole('alertdialog', {
+      name: 'Campaign Name already exists',
+    });
     this.btnCloseCampaign = page.locator('//button/span[text()="Close campaign"]');
   }
   async goto() {

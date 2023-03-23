@@ -46,7 +46,7 @@ Feature: Create New Campaign
     And I create a new campaign all required fields except "<fieldName>" field
     Then the "This field is required" message should be displayed next to "<fieldName>" field
 
-    Examples: 
+    Examples:
       | fieldName             |
       | Name                  |
       | Target                |
@@ -78,7 +78,7 @@ Feature: Create New Campaign
     And I create a new campaign all required fields except "<fieldName>" field
     Then the "This field is required" message should be displayed next to "<fieldName>" field
 
-    Examples: 
+    Examples:
       | fieldName             |
       | Name                  |
       | Target                |
@@ -100,3 +100,23 @@ Feature: Create New Campaign
       | Skill/Experience      |
       | Attitude              |
       | English               |
+
+  @CL-0004 @CL-0004-1
+  Scenario: Add new campaign with full fields as TA Manager
+    Given I sign in with role as "TA Manager"
+    When I go to Campaigns page
+    And I click on "Add New Campaign" button
+    When I create a new campaign with the required fields and campaign name is "new01"
+    And I click on "Add New Campaign" button
+    And I create a new campaign with the required fields and campaign name is "new01"
+    Then  the "Campaign Name already exists" message should be displayed
+
+  @CL-0004 @CL-0004-2
+  Scenario: Add new campaign with full fields as TA Manager
+    Given I sign in with role as "Campaign Manager 1"
+    When I go to Campaigns page
+    And I click on "Add New Campaign" button
+    When I create a new campaign with the required fields and campaign name is "new01"
+    And I click on "Add New Campaign" button
+    And I create a new campaign with the required fields and campaign name is "new01"
+    Then  the "Campaign Name already exists" message should be displayed

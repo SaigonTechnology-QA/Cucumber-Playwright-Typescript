@@ -24,7 +24,7 @@ When('I create a new campaign with the required fields', async function (this: I
 });
 
 When(
-  'I create a new campaign with the Manager field is user login successfully',
+  'I create a new campaign with the Manager field is fullname of current login user',
   async function (this: ICustomWorld) {
     const page = this.page!;
     const createCampaignPage = new CreateCampaignPage(page, this);
@@ -62,14 +62,12 @@ Then('the newly updated Campaign should be display on table', async function (th
   await commonPage.checkTableCellValueByColumnName(newCampaignName);
 });
 
-Given(
-  'I create a new campaign with campaign name is successfully',
-  async function (this: ICustomWorld) {
-    const page = this.page!;
-    const createCampaignPage = new CreateCampaignPage(page, this);
-    await createCampaignPage.createNewCampaignWithRequiredFields();
-  },
-);
+Given('I create a new campaign successfully', async function (this: ICustomWorld) {
+  const page = this.page!;
+  const createCampaignPage = new CreateCampaignPage(page, this);
+  await createCampaignPage.createNewCampaignWithRequiredFields();
+});
+
 When(
   'I create a new campaign all required fields except {string} field',
   async function (this: ICustomWorld, fieldName: string) {
@@ -96,6 +94,34 @@ When('I create a new campaign with the full fields', async function (this: ICust
   const createCampaignPage = new CreateCampaignPage(page, this);
   await createCampaignPage.createNewCampaignWithFullFieldsMain();
 });
+
+Then(
+  'the newly created campaign should be displayed on Campaigns page',
+  async function (this: ICustomWorld) {
+    const page = this.page!;
+    const campaignPage = new CampaignPage(page, this);
+    await campaignPage.checkCampainExistInDraftStatus();
+  },
+);
+
+Then(
+  'the "Campaign Name already exists" message should be displayed',
+  async function (this: ICustomWorld) {
+    const page = this.page!;
+    const campaignPage = new CampaignPage(page, this);
+    await campaignPage.txtErrorExistCampaignMsg.isVisible();
+  },
+);
+
+When(
+  'I create a new campaign with the required fields and campaign name is {string}',
+  async function (this: ICustomWorld, campaignName: string) {
+    const page = this.page!;
+    const createCampaignPage = new CreateCampaignPage(page, this);
+    await createCampaignPage.createNewCampaignWithCampaignName(campaignName);
+  },
+);
+
 When(
   'I input values for 2 fields TA Executive and Primary TA Executive',
   async function (this: ICustomWorld) {

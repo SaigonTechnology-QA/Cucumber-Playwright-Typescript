@@ -108,7 +108,7 @@ Feature: Create New Campaign
     And I click on "Add New Campaign" button
     When I create a new campaign with the required fields and campaign name is "new01"
     And I click on "Add New Campaign" button
-    And I create a new campaign with the required fields and campaign name is "new01"
+    And I create a new campaign with the required fields and existing campaign name
     Then  the "Campaign Name already exists" message should be displayed
 
   @CL-0004 @CL-0004-2
@@ -118,5 +118,5 @@ Feature: Create New Campaign
     And I click on "Add New Campaign" button
     When I create a new campaign with the required fields and campaign name is "new01"
     And I click on "Add New Campaign" button
-    And I create a new campaign with the required fields and campaign name is "new01"
+    And I create a new campaign with the required fields and existing campaign name
     Then  the "Campaign Name already exists" message should be displayed

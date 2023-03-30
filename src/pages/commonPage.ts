@@ -11,7 +11,10 @@ export class CommonPage {
   dataUtils: DataUtils;
 
   readonly btnYes: Locator;
+  readonly btnSave: Locator;
   readonly btnCancel: Locator;
+  readonly tdCandidateName: Locator;
+  readonly toastMesssage: Locator;
   constructor(page: Page, iCustomWorld: ICustomWorld) {
     this.page = page;
     this.iCustomWorld = iCustomWorld;
@@ -19,6 +22,9 @@ export class CommonPage {
 
     this.btnYes = page.locator('//button[text()="Yes"]');
     this.btnCancel = page.locator('//button[text()="Cancel"]');
+    this.tdCandidateName = page.locator('//table/tbody/tr/td[2]');
+    this.btnSave = page.locator('//button[normalize-space(text())="Save"]');
+    this.toastMesssage = page.locator('//div[@id="toast-container"]//div[@role="alertdialog"]');
   }
   async goto(prefix: string) {
     await this.page.goto(config.BASE_URL + prefix);
@@ -35,7 +41,7 @@ export class CommonPage {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  async clickCommonButton(text: 'Yes' | 'Cancel') {
+  async clickCommonButton(text: 'Yes' | 'Cancel' | 'Save') {
     await this.delay(500);
     switch (text) {
       case 'Yes': {
@@ -46,24 +52,57 @@ export class CommonPage {
         await this.btnCancel.click();
         break;
       }
+      case 'Save': {
+        await this.btnSave.click();
+        break;
+      }
     }
     await this.delay(1000);
     await this.page.waitForLoadState();
   }
-  async checkErrorMessagebyFieldName(fieldName: string, errorMessage: string) {
-    await expect(
-      this.page.locator(
-        replace('//label[contains(text(),"fieldName")]//small', 'fieldName', fieldName),
-      ),
-    ).toHaveText(errorMessage);
-    await this.page
-      .locator(replace('//label[contains(text(),"fieldName")]//small', 'fieldName', fieldName))
-      .scrollIntoViewIfNeeded();
+  async checkErrorMessagebyFieldName(
+    fieldName: string,
+    errorMessage: string,
+    isMessageChildNode = true,
+  ) {
+    if (isMessageChildNode) {
+      await expect(
+        this.page.locator(
+          replace('//label[contains(text(),"fieldName")]//small', 'fieldName', fieldName),
+        ),
+      ).toHaveText(errorMessage);
+      await this.page
+        .locator(replace('//label[contains(text(),"fieldName")]//small', 'fieldName', fieldName))
+        .scrollIntoViewIfNeeded();
+    } else {
+      await expect(
+        this.page.locator(
+          replace(
+            '//label[contains(text(),"fieldName")]/following-sibling::small',
+            'fieldName',
+            fieldName,
+          ),
+        ),
+      ).toHaveText(errorMessage);
+      await this.page
+        .locator(
+          replace(
+            '//label[contains(text(),"fieldName")]/following-sibling::small',
+            'fieldName',
+            fieldName,
+          ),
+        )
+        .scrollIntoViewIfNeeded();
+    }
   }
   async clearTextField(locator: Locator) {
     await locator.click();
     await this.page.keyboard.press('Control+A');
     await this.page.keyboard.press('Backspace');
+  }
+
+  async checkToastMessageContent(toastMesssage: string) {
+    await expect(this.toastMesssage).toHaveText(toastMesssage);
   }
   async selectDropdownValue(dropDownName: string, optionValue: string) {
     const dropDownNameXpath = replace(
@@ -84,6 +123,30 @@ export class CommonPage {
 
     //Select option value
     await this.page.locator(drpLocationOptionXpath).click();
+
+    //Close Dropdown
+    await this.page.locator(dropDownNameXpath).click();
+  }
+
+  async selectDropdownWithLastFoundValue(dropDownName: string, optionValue: string) {
+    const dropDownNameXpath = replace(
+      '//label[starts-with(normalize-space(text()),"@dropDownName")]',
+      '@dropDownName',
+      dropDownName,
+    );
+    const dropDownNameFieldXpath =
+      dropDownNameXpath + '/following-sibling::*//div[@class="search-box form-control d-flex"]';
+    const drpLocationOptionXpath = replace(
+      dropDownNameXpath + '/following-sibling::*//li[normalize-space(text())="optionValue"]',
+      'optionValue',
+      optionValue,
+    );
+
+    //Open dropdown
+    await this.page.locator(dropDownNameFieldXpath).click();
+
+    //Select option value
+    await this.page.locator(drpLocationOptionXpath).last().click();
 
     //Close Dropdown
     await this.page.locator(dropDownNameXpath).click();
@@ -149,5 +212,11 @@ export class CommonPage {
     }
 
     if (!cellFound) fail('Can not find cell Value: ' + cellValue);
+  }
+  async checkCandidateInfo() {
+    const basicInfo = await this.dataUtils.getCandidateDataByType('required').basicInfo;
+    const name = basicInfo.firstName + ' ' + basicInfo.lastName;
+    await this.tdCandidateName.scrollIntoViewIfNeeded;
+    await expect(this.tdCandidateName).toHaveText(name);
   }
 }

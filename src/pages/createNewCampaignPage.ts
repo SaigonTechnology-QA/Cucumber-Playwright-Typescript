@@ -295,7 +295,20 @@ export class CreateCampaignPage {
     const dataUtils = new DataUtils();
     const dateString = await dataUtils.getDateString();
     const newCampaignName = campaignName + ' ' + dateString;
-    process.env.newCampaignName = newCampaignName;
+    process.env.existingCampaignName = newCampaignName;
+
+    await this.txtName.clear();
+    await this.txtName.fill(newCampaignName);
+
+    await this.clickSave();
+  }
+
+  async createNewCampaignWithExistingCampaignName() {
+    await this.createNewCampaignWithExceptField('');
+
+    const newCampaignName =
+      process.env.existingCampaignName !== undefined ? process.env.existingCampaignName : '';
+    process.env.newCampaignName = process.env.existingCampaignName;
 
     await this.txtName.clear();
     await this.txtName.fill(newCampaignName);

@@ -4,6 +4,7 @@ import { ICustomWorld } from '../support/custom-world';
 import { CommonPage } from '../pages/commonPage';
 import { DataUtils } from '../utils/dataUtils';
 import { Given, When, Then } from '@cucumber/cucumber';
+import { expect } from '@playwright/test';
 
 When(`I go to Campaigns page`, async function (this: ICustomWorld) {
   const page = this.page!;
@@ -77,6 +78,7 @@ When(
     await createCampaignPage.clickSave();
   },
 );
+
 Then(
   'the {string} message should be displayed next to {string} field',
   async function (this: ICustomWorld, errorMessage: string, fieldName: string) {
@@ -109,7 +111,7 @@ Then(
   async function (this: ICustomWorld) {
     const page = this.page!;
     const campaignPage = new CampaignPage(page, this);
-    await campaignPage.txtErrorExistCampaignMsg.isVisible();
+    await expect(campaignPage.txtErrorExistCampaignMsg).toBeVisible();
   },
 );
 
@@ -119,6 +121,15 @@ When(
     const page = this.page!;
     const createCampaignPage = new CreateCampaignPage(page, this);
     await createCampaignPage.createNewCampaignWithCampaignName(campaignName);
+  },
+);
+
+When(
+  'I create a new campaign with the required fields and existing campaign name',
+  async function (this: ICustomWorld) {
+    const page = this.page!;
+    const createCampaignPage = new CreateCampaignPage(page, this);
+    await createCampaignPage.createNewCampaignWithExistingCampaignName();
   },
 );
 

@@ -3,6 +3,7 @@ import { ICustomWorld } from '../support/custom-world';
 import { CreateNewApplicants } from '../pages/createNewCandidate';
 import { CandidatePool } from '../pages/candidatePoolPage';
 import { CommonPage } from '../pages/commonPage';
+import { InterviewProcess } from '../pages/interviewProcess';
 import { When, Then } from '@cucumber/cucumber';
 
 When(`I go to New Applicants page`, async function (this: ICustomWorld) {
@@ -60,13 +61,14 @@ When(`I click on {string} common button`, async function (this: ICustomWorld, bu
 Then(
   `the newly created applicant should be displayed in Candidate Pool page`,
   async function (this: ICustomWorld) {
-    const email = process.env.candidateEmail !== undefined ? process.env.candidateEmail : '';
+    const email =
+      process.env.candidateApplicantEmail !== undefined ? process.env.candidateApplicantEmail : '';
     const page = this.page!;
     const candidatePool = new CandidatePool(page, this);
     await candidatePool.goto();
     await candidatePool.searchCandidate(email);
     const commonPage = new CommonPage(page, this);
-    await commonPage.checkCandidateInfo();
+    await commonPage.checkCandidateNameInfo(2);
   },
 );
 When(
@@ -87,7 +89,7 @@ Then(
     await newApplicantsPage.goto();
     await newApplicantsPage.searchNewApplicant(email);
     const commonPage = new CommonPage(page, this);
-    await commonPage.checkCandidateInfo();
+    await commonPage.checkCandidateNameInfo(2);
   },
 );
 Then(
@@ -108,5 +110,31 @@ Then(
     const page = this.page!;
     const commonPage = new CommonPage(page, this);
     await commonPage.checkToastMessageContent('Email is existed');
+  },
+);
+When(
+  `And I create New Candidate with all fields and the attachment is a file`,
+  async function (this: ICustomWorld) {
+    const page = this.page!;
+    const createNewApplicants = new CreateNewApplicants(page, this);
+    await createNewApplicants.createNewApplicants('', 'full', 'file');
+  },
+);
+Then(
+  'the newly created applicant should be displayed on Interview Process page of Campaign and Candidate Pool page',
+  async function (this: ICustomWorld) {
+    const email =
+      process.env.candidateApplicantEmail !== undefined ? process.env.candidateApplicantEmail : '';
+    const page = this.page!;
+    const interviewProcess = new InterviewProcess(page, this);
+    await interviewProcess.goto();
+    await interviewProcess.selectCampaign();
+    await interviewProcess.searchNewApplicant(email);
+    const commonPage = new CommonPage(page, this);
+    await commonPage.checkCandidateNameInfo(1);
+    const candidatePool = new CandidatePool(page, this);
+    await candidatePool.goto();
+    await candidatePool.searchCandidate(email);
+    await commonPage.checkCandidateNameInfo(2);
   },
 );

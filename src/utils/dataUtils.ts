@@ -29,7 +29,8 @@ export class DataUtils {
     return `${year}${month}${day}-${hour}${min}${sec}`;
   }
   async getEmail() {
-    return 'Auto' + (await this.getDateString()) + '@gmail.com';
+    const timestamp = Date.now().toString();
+    return 'Auto' + timestamp + '@gmail.com';
   }
   async getPhoneNumber() {
     const timestamp = Date.now().toString();

@@ -45,7 +45,6 @@ Feature: Create New Campaign
     And I click on "Add New Campaign" button
     And I create a new campaign all required fields except "<fieldName>" field
     Then the "This field is required" message should be displayed next to "<fieldName>" field
-
     Examples:
       | fieldName             |
       | Name                  |
@@ -77,7 +76,6 @@ Feature: Create New Campaign
     And I click on "Add New Campaign" button
     And I create a new campaign all required fields except "<fieldName>" field
     Then the "This field is required" message should be displayed next to "<fieldName>" field
-
     Examples:
       | fieldName             |
       | Name                  |

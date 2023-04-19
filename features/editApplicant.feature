@@ -26,7 +26,7 @@ Feature: Edit Applicant
     And I click on "Add New Candidate" button
     And I create New Candidate with all the required fields with the attachment is a link
     And I click on "<btnName>" common button
-    When I go to New Applicants page
+    And  I go to New Applicants page
     And I click on "Edit Applicant" option in the hamburger menu button
     And I update new info into existing Applicant with all required fields
     And I click on "<btnName>" common button

@@ -13,7 +13,6 @@ export class CommonPage {
   readonly btnYes: Locator;
   readonly btnSave: Locator;
   readonly btnCancel: Locator;
-  readonly tdCandidateName: Locator;
   readonly toastMesssage: Locator;
   constructor(page: Page, iCustomWorld: ICustomWorld) {
     this.page = page;
@@ -22,9 +21,8 @@ export class CommonPage {
 
     this.btnYes = page.locator('//button[text()="Yes"]');
     this.btnCancel = page.locator('//button[text()="Cancel"]');
-    this.tdCandidateName = page.locator('//table/tbody/tr/td[2]');
     this.btnSave = page.locator('//button[normalize-space(text())="Save"]');
-    this.toastMesssage = page.locator('//div[@id="toast-container"]//div[@role="alertdialog"]');
+    this.toastMesssage = page.locator('//div[@role="alertdialog"]');
   }
   async goto(prefix: string) {
     await this.page.goto(config.BASE_URL + prefix);
@@ -213,10 +211,13 @@ export class CommonPage {
 
     if (!cellFound) fail('Can not find cell Value: ' + cellValue);
   }
-  async checkCandidateInfo() {
+
+  async checkCandidateNameInfo(columnIndex: number) {
     const basicInfo = await this.dataUtils.getCandidateDataByType('required').basicInfo;
     const name = basicInfo.firstName + ' ' + basicInfo.lastName;
-    await this.tdCandidateName.scrollIntoViewIfNeeded;
-    await expect(this.tdCandidateName).toHaveText(name);
+    const tdCandidateName = '//table/tbody/tr/td[' + columnIndex + ']';
+    await this.page.locator(tdCandidateName).waitFor({ state: 'visible' });
+    await this.page.locator(tdCandidateName).scrollIntoViewIfNeeded;
+    await expect(this.page.locator(tdCandidateName)).toHaveText(name);
   }
 }

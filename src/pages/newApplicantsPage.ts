@@ -7,6 +7,9 @@ export class NewApplicants {
   readonly page: Page;
   readonly btnAddNewCandidate: Locator;
   readonly txtSearchKey: Locator;
+  readonly btnHamburgerMenu: Locator;
+  readonly btnEditApplicant: Locator;
+  readonly btnCompleteProfile: Locator;
   commonPage: CommonPage;
   constructor(page: Page, iCustomWorld: ICustomWorld) {
     this.page = page;
@@ -15,6 +18,11 @@ export class NewApplicants {
     this.txtSearchKey = page.locator(
       '//input[@placeholder="Name, email, linkedIn, github, facebook"]',
     );
+    this.btnHamburgerMenu = page.locator(
+      '//button[@title="Click to show actions"]',
+    );
+    this.btnEditApplicant = page.locator('//button/span[contains(text(),"Edit applicant")]');
+    this.btnCompleteProfile = page.locator('//button/span[contains(text(),"Complete profile")]');
   }
   async goto() {
     await this.page.goto(config.BASE_URL + 'new-applicants');
@@ -32,5 +40,19 @@ export class NewApplicants {
     await this.page.waitForLoadState();
     await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector('//table/tbody/tr/td[3]');
+  }
+
+  async clickHamburgerButton() {
+    await this.btnHamburgerMenu.scrollIntoViewIfNeeded();
+    await this.btnHamburgerMenu.click();
+  }
+  async clickEditApplicantMenuItem() {
+    await this.clickHamburgerButton();
+    await this.btnEditApplicant.click();
+  }
+
+  async clickCompleteProfileMenuItem() {
+    await this.btnCompleteProfile.scrollIntoViewIfNeeded();
+    await this.btnCompleteProfile.click();
   }
 }

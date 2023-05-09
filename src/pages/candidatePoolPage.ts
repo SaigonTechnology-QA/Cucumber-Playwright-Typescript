@@ -8,6 +8,7 @@ export class CandidatePool {
   commonPage: CommonPage;
   readonly txtBasicInfo: Locator;
   readonly btnSearch: Locator;
+
   constructor(page: Page, iCustomWorld: ICustomWorld) {
     this.page = page;
     this.commonPage = new CommonPage(this.page, iCustomWorld);

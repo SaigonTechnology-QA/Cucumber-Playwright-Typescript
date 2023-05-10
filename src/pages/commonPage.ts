@@ -14,6 +14,7 @@ export class CommonPage {
   readonly btnSave: Locator;
   readonly btnCancel: Locator;
   readonly toastMesssage: Locator;
+  readonly btnHamburgerMenu: Locator;
   constructor(page: Page, iCustomWorld: ICustomWorld) {
     this.page = page;
     this.iCustomWorld = iCustomWorld;
@@ -23,6 +24,7 @@ export class CommonPage {
     this.btnCancel = page.locator('//button[text()="Cancel"]');
     this.btnSave = page.locator('//button[normalize-space(text())="Save"]');
     this.toastMesssage = page.locator('//div[@role="alertdialog"]');
+    this.btnHamburgerMenu = page.locator('//button[@title="Click to show actions"]');
   }
   async goto(prefix: string) {
     await this.page.goto(config.BASE_URL + prefix);
@@ -100,7 +102,10 @@ export class CommonPage {
   }
 
   async checkToastMessageContent(toastMesssage: string) {
-    await expect(this.toastMesssage).toHaveText(toastMesssage);
+    await expect(await this.toastMesssage).toHaveText(toastMesssage);
+  }
+  async checkEmailApplicantAfterSearch(email: string, expectedCount: number) {
+    await expect(await this.page.getByTitle(email)).toHaveCount(expectedCount);
   }
   async selectDropdownValue(dropDownName: string, optionValue: string) {
     const dropDownNameXpath = replace(
@@ -219,5 +224,16 @@ export class CommonPage {
     await this.page.locator(tdCandidateName).waitFor({ state: 'visible' });
     await this.page.locator(tdCandidateName).scrollIntoViewIfNeeded;
     await expect(this.page.locator(tdCandidateName)).toHaveText(name);
+  }
+
+  async clickOnContextHamburgerButton() {
+    await this.btnHamburgerMenu.scrollIntoViewIfNeeded();
+    await this.btnHamburgerMenu.click();
+  }
+  async clickOnOptionOnContextBurgerMenu(optionName: string) {
+    await this.clickOnContextHamburgerButton();
+    await this.page
+      .locator(replace('//button/span[contains(text(),"@optionName")]', '@optionName', optionName))
+      .click();
   }
 }

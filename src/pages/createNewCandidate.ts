@@ -204,18 +204,26 @@ export class CreateNewApplicants {
     if (buttonName === 'Save') {
       await this.btnSave.scrollIntoViewIfNeeded();
       await this.btnSave.click();
-      await this.page.waitForEvent('response');
-      await this.page.waitForLoadState('networkidle');
-      await this.page.waitForLoadState();
-      await this.page.waitForLoadState('domcontentloaded');
+      try {
+        await this.page.waitForEvent('response');
+        await this.page.waitForLoadState('networkidle');
+        await this.page.waitForLoadState();
+        await this.page.waitForLoadState('domcontentloaded');
+      } catch (e) {
+        console.log(e);
+      }
     }
     if (buttonName === 'Save & Close') {
       await this.btnSaveAndClose.scrollIntoViewIfNeeded();
       await this.btnSaveAndClose.click();
-      await this.page.waitForEvent('response');
-      await this.page.waitForLoadState('networkidle');
-      await this.page.waitForLoadState();
-      await this.page.waitForLoadState('domcontentloaded');
+      try {
+        await this.page.waitForEvent('response');
+        await this.page.waitForLoadState('networkidle');
+        await this.page.waitForLoadState();
+        await this.page.waitForLoadState('domcontentloaded');
+      } catch (e) {
+        console.log(e);
+      }
     }
   }
 }

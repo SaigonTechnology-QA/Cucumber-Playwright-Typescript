@@ -10,6 +10,7 @@ export class NewApplicants {
   readonly btnHamburgerMenu: Locator;
   readonly btnEditApplicant: Locator;
   readonly btnCompleteProfile: Locator;
+  readonly btnYesOnConfirmDeletePopUp: Locator;
   commonPage: CommonPage;
   constructor(page: Page, iCustomWorld: ICustomWorld) {
     this.page = page;
@@ -18,11 +19,12 @@ export class NewApplicants {
     this.txtSearchKey = page.locator(
       '//input[@placeholder="Name, email, linkedIn, github, facebook"]',
     );
-    this.btnHamburgerMenu = page.locator(
-      '//button[@title="Click to show actions"]',
-    );
+    this.btnHamburgerMenu = page.locator('//button[@title="Click to show actions"]');
     this.btnEditApplicant = page.locator('//button/span[contains(text(),"Edit applicant")]');
     this.btnCompleteProfile = page.locator('//button/span[contains(text(),"Complete profile")]');
+    this.btnYesOnConfirmDeletePopUp = page.locator(
+      '//div[@class="button_dialog"]/button[contains(text(),"Yes")]',
+    );
   }
   async goto() {
     await this.page.goto(config.BASE_URL + 'new-applicants');
@@ -40,6 +42,14 @@ export class NewApplicants {
     await this.page.waitForLoadState();
     await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector('//table/tbody/tr/td[3]');
+  }
+
+  async searchApplicantByEmailWithoutResult(email: string) {
+    await this.commonPage.clearTextField(this.txtSearchKey);
+    await this.txtSearchKey.fill(email);
+    await this.page.waitForEvent('response');
+    await this.page.waitForLoadState();
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async clickHamburgerButton() {

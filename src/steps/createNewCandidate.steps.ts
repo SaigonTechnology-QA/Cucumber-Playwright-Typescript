@@ -138,3 +138,81 @@ Then(
     await commonPage.checkCandidateNameInfo(2);
   },
 );
+
+When(
+  'I click on "Delete candidate" option in the hamburger menu button',
+  async function (this: ICustomWorld) {
+    const page = this.page!;
+    const commonPage = new CommonPage(page, this);
+    const emailCandidate =
+      process.env.candidateApplicantEmail !== undefined ? process.env.candidateApplicantEmail : '';
+    const newApplicants = new NewApplicants(page, this);
+    await newApplicants.searchNewApplicant(emailCandidate);
+    await commonPage.clickOnOptionOnContextBurgerMenu('Delete candidate');
+  },
+);
+
+When('I click on "Yes" button in the Confirm Message modal', async function (this: ICustomWorld) {
+  const page = this.page!;
+  const commonPage = new CommonPage(page, this);
+  await commonPage.clickCommonButton('Yes');
+});
+
+Then('the "Deleted candidate" message should be displayed', async function (this: ICustomWorld) {
+  const page = this.page!;
+  const commonPage = new CommonPage(page, this);
+  await commonPage.checkToastMessageContent('Deleted candidate');
+});
+
+Then(
+  'the newly deleted Candidate should not be displayed on New Applicants page',
+  async function (this: ICustomWorld) {
+    const page = this.page!;
+    const newApplicants = new NewApplicants(page, this);
+    const commonPage = new CommonPage(page, this);
+    await newApplicants.goto();
+    //Search created email
+    const emailCandidate =
+      process.env.candidateApplicantEmail !== undefined ? process.env.candidateApplicantEmail : '';
+    await newApplicants.searchApplicantByEmailWithoutResult(emailCandidate);
+    await commonPage.checkEmailApplicantAfterSearch(emailCandidate, 0);
+  },
+);
+When('I create successfully an applicant', async function (this: ICustomWorld) {
+  const page = this.page!;
+  const newApplicants = new NewApplicants(page, this);
+  await newApplicants.goto();
+  await newApplicants.goToNewCandidatePage();
+  const createNewApplicants = new CreateNewApplicants(page, this);
+  await createNewApplicants.createNewApplicants('', 'required', 'file');
+  await createNewApplicants.clickOnCommonButton('Save');
+});
+Then(
+  'I input existed email address and other required fields',
+  async function (this: ICustomWorld) {
+    const page = this.page!;
+    const email =
+      process.env.candidateApplicantEmail !== undefined ? process.env.candidateApplicantEmail : '';
+    const createNewApplicants = new CreateNewApplicants(page, this);
+    await createNewApplicants.inputExistedEmail(email);
+    await createNewApplicants.createNewApplicants('Email', 'required', 'file');
+  },
+);
+Then('I input existed phone number and other required fields', async function (this: ICustomWorld) {
+  const page = this.page!;
+  const phoneNumber = process.env.candidatePhone !== undefined ? process.env.candidatePhone : '';
+  const createNewApplicants = new CreateNewApplicants(page, this);
+  await createNewApplicants.inputExistedPhoneNumber(phoneNumber);
+  await createNewApplicants.createNewApplicants('Phone number', 'required', 'file');
+});
+Then(
+  'the "Phone number is existed" toast message should be displayed',
+  async function (this: ICustomWorld) {
+    const page = this.page!;
+    const commonPage = new CommonPage(page, this);
+    await commonPage.checkToastMessageContent('Phone number is existed');
+    const createNewApplicants = new CreateNewApplicants(page, this);
+    await createNewApplicants.txtPhoneNumber.scrollIntoViewIfNeeded();
+    await commonPage.delay(2000);
+  },
+);

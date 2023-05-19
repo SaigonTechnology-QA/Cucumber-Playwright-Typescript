@@ -1,7 +1,7 @@
 import { ICustomWorld } from './custom-world';
 import { config } from './config';
 import { DataUtils } from './../utils/dataUtils';
-import { CampaignPage } from '../pages/campaignPage';
+// import { CampaignPage } from '../pages/campaignPage';
 import { Before, After, BeforeAll, AfterAll, Status, setDefaultTimeout } from '@cucumber/cucumber';
 import {
   chromium,
@@ -85,13 +85,14 @@ After(async function (this: ICustomWorld, { result }: ITestCaseHookParameter) {
     }
   }
 
-  const newCampaignName =
-    process.env.newCampaignName !== undefined ? process.env.newCampaignName : '';
-  if (newCampaignName !== '') {
-    const page = this.page!;
-    const campaignPage = new CampaignPage(page, this);
-    await campaignPage.campaignTeardown(newCampaignName);
-  }
+  // const newCampaignName =
+  //   process.env.newCampaignName !== undefined ? process.env.newCampaignName : '';
+  // if (newCampaignName !== '') {
+  //   const page = this.page!;
+  //   const campaignPage = new CampaignPage(page, this);
+  //   await campaignPage.campaignTeardown(newCampaignName);
+  // }
+
   await this.page?.close();
   await this.context?.close();
 });

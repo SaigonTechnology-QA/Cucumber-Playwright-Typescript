@@ -2,8 +2,21 @@ import { ICustomWorld } from '../support/custom-world';
 import { EditApplicantPage } from '../pages/editApplicantPage';
 import { NewApplicants } from '../pages/newApplicantsPage';
 import { CommonPage } from '../pages/commonPage';
+import { CreateNewApplicants } from '../pages/createNewCandidate';
 import { When, Then } from '@cucumber/cucumber';
 
+When(
+  'I create successfully New Candidate with all the required fields and with the attachment is a link',
+  async function (this: ICustomWorld) {
+    const page = this.page!;
+    const newApplicants = new NewApplicants(page, this);
+    const createNewApplicants = new CreateNewApplicants(page, this);
+    await newApplicants.goto();
+    await newApplicants.goToNewCandidatePage();
+    await createNewApplicants.createNewApplicants('', 'required', 'link');
+    await createNewApplicants.clickOnCommonButton('Save & Close');
+  },
+);
 When(
   'I click on "Edit Applicant" option in the hamburger menu button',
   async function (this: ICustomWorld) {

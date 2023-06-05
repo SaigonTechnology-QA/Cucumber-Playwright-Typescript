@@ -13,15 +13,20 @@ export class CommonPage {
   readonly btnYes: Locator;
   readonly btnSave: Locator;
   readonly btnCancel: Locator;
+  readonly btnConfirm: Locator;
   readonly toastMesssage: Locator;
   readonly btnHamburgerMenu: Locator;
+  readonly txtSearchNameEmailField: Locator;
   constructor(page: Page, iCustomWorld: ICustomWorld) {
     this.page = page;
     this.iCustomWorld = iCustomWorld;
     this.dataUtils = new DataUtils();
-
+    this.txtSearchNameEmailField = page.locator(
+      '//input[@placeholder="Name, email, linkedIn, github, facebook"]',
+    );
     this.btnYes = page.locator('//button[text()="Yes"]');
     this.btnCancel = page.locator('//button[text()="Cancel"]');
+    this.btnConfirm = page.locator('//button[text()="Confirm"]');
     this.btnSave = page.locator('//button[normalize-space(text())="Save"]');
     this.toastMesssage = page.locator('//div[@role="alertdialog"]');
     this.btnHamburgerMenu = page.locator('//button[@title="Click to show actions"]');
@@ -41,7 +46,7 @@ export class CommonPage {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  async clickCommonButton(text: 'Yes' | 'Cancel' | 'Save') {
+  async clickCommonButton(text: 'Yes' | 'Cancel' | 'Save' | 'Confirm') {
     await this.delay(500);
     switch (text) {
       case 'Yes': {
@@ -54,6 +59,10 @@ export class CommonPage {
       }
       case 'Save': {
         await this.btnSave.click();
+        break;
+      }
+      case 'Confirm': {
+        await this.btnConfirm.click();
         break;
       }
     }
@@ -131,6 +140,26 @@ export class CommonPage {
     await this.page.locator(dropDownNameXpath).click();
   }
 
+  async selectDropdownValueWithFirstValue(dropDownName: string) {
+    const dropDownNameXpath = replace(
+      '//label[contains(text(),"@dropDownName")]',
+      '@dropDownName',
+      dropDownName,
+    );
+    const dropDownNameFieldXpath =
+      dropDownNameXpath + '/following-sibling::*//div[@class="search-box form-control d-flex"]';
+    const drpLocationFirstOptionXpath = dropDownNameXpath + '/following-sibling::*//li[1]';
+
+    //Open dropdown
+    await this.page.locator(dropDownNameFieldXpath).click();
+
+    //Select option value
+    await this.page.locator(drpLocationFirstOptionXpath).click();
+
+    //Close Dropdown
+    await this.page.locator(dropDownNameXpath).click();
+  }
+
   async selectDropdownWithLastFoundValue(dropDownName: string, optionValue: string) {
     const dropDownNameXpath = replace(
       '//label[starts-with(normalize-space(text()),"@dropDownName")]',
@@ -150,6 +179,26 @@ export class CommonPage {
 
     //Select option value
     await this.page.locator(drpLocationOptionXpath).last().click();
+
+    //Close Dropdown
+    await this.page.locator(dropDownNameXpath).click();
+  }
+  async selectDropdownWithFirstOption(dropDownName: string) {
+    const dropDownNameXpath = replace(
+      '//label[starts-with(normalize-space(text()),"@dropDownName")]',
+      '@dropDownName',
+      dropDownName,
+    );
+    const dropDownNameFieldXpath =
+      dropDownNameXpath + '/following-sibling::*//div[@class="search-box form-control d-flex"]';
+    const drpLocationOptionXpath =
+      dropDownNameXpath + '/following-sibling::*//li[@class="search-result-item"]';
+
+    //Open dropdown
+    await this.page.locator(dropDownNameFieldXpath).click();
+
+    //Select option value
+    await this.page.locator(drpLocationOptionXpath).first().click();
 
     //Close Dropdown
     await this.page.locator(dropDownNameXpath).click();
@@ -235,5 +284,13 @@ export class CommonPage {
     await this.page
       .locator(replace('//button/span[contains(text(),"@optionName")]', '@optionName', optionName))
       .click();
+  }
+
+  async searchByNameEmailSocial(email: string) {
+    await this.clearTextField(this.txtSearchNameEmailField);
+    await this.txtSearchNameEmailField.fill(email);
+    await this.page.waitForLoadState();
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForSelector('//table/tbody/tr/td[3]');
   }
 }

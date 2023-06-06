@@ -1,6 +1,5 @@
 import { CommonPage } from './commonPage';
 import { ICustomWorld } from '../support/custom-world';
-import { DataUtils } from '../utils/dataUtils';
 import { Locator, Page } from '@playwright/test';
 
 export class CompleteProfile {
@@ -18,19 +17,11 @@ export class CompleteProfile {
   }
 
   async selectDataToCompleteACandidateProfile() {
-    const dataUtils = new DataUtils();
-    const recruitmentInfo = await dataUtils.getCandidateDataByType('full').recruitmentInfo;
-
     //Campaign
-    await this.commonPage.selectDropdownValue(
-      'Campaign',
-      recruitmentInfo.campaign !== undefined ? recruitmentInfo.campaign : '',
-    );
-
+    await this.commonPage.selectDropdownValueWithFirstValue('Campaign');
     //Assigned TA Executive
-    await this.commonPage.selectDropdownValue(
-      'Assigned TA Executive',
-      recruitmentInfo.campaign !== undefined ? recruitmentInfo.campaign : '',
-    );
+    await this.commonPage.selectDropdownValueWithFirstValue('Assigned TA Executive');
+    //Working Location
+    await this.commonPage.selectDropdownValueWithFirstValue('Working location');
   }
 }

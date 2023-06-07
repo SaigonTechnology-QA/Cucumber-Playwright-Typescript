@@ -208,6 +208,7 @@ export class CreateCampaignPage {
     await this.btnSave.click();
     await this.page.waitForLoadState();
   }
+
   async clickCancel() {
     //Save
     await this.btnCancel.click();
@@ -314,5 +315,26 @@ export class CreateCampaignPage {
     await this.txtName.fill(newCampaignName);
 
     await this.clickSave();
+  }
+  async updateCampaignWithRequireField() {
+    const dataUtils = new DataUtils();
+    const campaignJobData = await dataUtils.getCampaignDataByType('required').jobDetails;
+    const campaignInterviewquestionData = await dataUtils.getCampaignDataByType('required')
+      .sampleInterviewQuestions;
+    const newCampaignName =
+      process.env.existingCampaignName !== undefined ? process.env.existingCampaignName : '';
+    process.env.newCampaignName = process.env.existingCampaignName;
+
+    //clear & update Name
+    await this.commonPage.clearTextField(this.txtName);
+    await this.txtName.fill(newCampaignName + '_updated');
+
+    //clear & update Job Title
+    await this.commonPage.clearTextField(this.txtJobTitle);
+    await this.txtJobTitle.fill(campaignJobData.jobTitle + '_updated');
+
+    //clear & update Knowledge
+    await this.commonPage.clearTextField(this.txtKnowledge);
+    await this.txtKnowledge.type(campaignInterviewquestionData.knowledge + '_updated');
   }
 }

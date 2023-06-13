@@ -11,6 +11,9 @@ export class CreateNewApplicants {
   //Recruitment Info
   readonly btnAddSkill: Locator;
   readonly checkboxPrimarySkill: Locator;
+  readonly assignedTAExecutiveLbl: Locator;
+  readonly assignedTAExecutiveDd: Locator;
+  readonly assignedTAExecutiveDdValue: Locator;
   //Basic Info
   readonly txtFirstName: Locator;
   readonly txtLastName: Locator;
@@ -43,6 +46,15 @@ export class CreateNewApplicants {
     //Recruitment Info
     this.btnAddSkill = page.locator("//button[normalize-space(text())='Add']");
     this.checkboxPrimarySkill = page.locator("//*[normalize-space(text())='Primary Skill']/../div");
+    this.assignedTAExecutiveLbl = page.locator(
+      '//label[starts-with(normalize-space(text()),"Assigned TA Executive")]',
+    );
+    this.assignedTAExecutiveDd = page.locator(
+      '//label[starts-with(normalize-space(text()),"Assigned TA Executive")]/following-sibling::*//div[@class="search-box form-control d-flex"]',
+    );
+    this.assignedTAExecutiveDdValue = page.locator(
+      '//label[starts-with(normalize-space(text()),"Assigned TA Executive")]/following-sibling::*//li[@class="search-result-item"]',
+    );
     //Basic Info
     this.txtFirstName = page.locator("//*[@id='first-name']");
     this.txtLastName = page.locator("//*[@id='last-name']");
@@ -72,10 +84,39 @@ export class CreateNewApplicants {
     this.btnSave = page.locator("//button[normalize-space(text())='Save']");
     this.btnSaveAndClose = page.locator("//button[normalize-space(text())='Save & Close']");
   }
+  async getCampainName(): Promise<string> {
+    const dataUtils = new DataUtils();
+    const recruitmentInfo = await dataUtils.getCandidateDataByType('full').recruitmentInfo;
+    const campaignName = recruitmentInfo.campaign != undefined ? recruitmentInfo.campaign : '';
+    return campaignName;
+  }
+
+  async isAssignedTAExcutiveDropdownContainValue(value: string): Promise<boolean> {
+    let assignedTAExcutiveList: Array<string> = [];
+    //Click on Assigned TA Excutive Dropdown
+    await this.assignedTAExecutiveDd.click();
+
+    //Get all text of these values and add to array
+    assignedTAExcutiveList = await this.assignedTAExecutiveDdValue.allTextContents();
+
+    //Close dropdown
+    await this.assignedTAExecutiveLbl.click();
+
+    //Find the needed value in this array
+    if (
+      assignedTAExcutiveList.filter((item) => {
+        return item.trim() === value;
+      }).length
+    ) {
+      return true;
+    }
+    return false;
+  }
   async createNewApplicants(
     emptyFieldName: string,
     inputType: 'full' | 'required',
     attachmentType: 'file' | 'link',
+    campaignName: string,
   ) {
     const dataUtils = new DataUtils();
     const recruitmentInfo = await dataUtils.getCandidateDataByType('full').recruitmentInfo;
@@ -110,6 +151,7 @@ export class CreateNewApplicants {
         recruitmentInfo.assignedTAExecutive,
       );
     }
+
     //Basic Info
     //First Name
     if (emptyFieldName !== 'First name') {
@@ -156,16 +198,23 @@ export class CreateNewApplicants {
       ).toBeVisible();
     }
     if (inputType === 'full') {
-      //Campaign
-      await this.commonPage.selectDropdownValue(
-        'Campaign',
-        recruitmentInfo.campaign != undefined ? recruitmentInfo.campaign : '',
-      );
+      if (campaignName == '') {
+        await this.commonPage.selectDropdownValue('Campaign', await this.getCampainName());
+      } else {
+        await this.commonPage.selectDropdownValue('Campaign', campaignName);
+      }
       //Assigned TA Executive
-      await this.commonPage.selectDropdownValue(
-        'Assigned TA Executive',
+      const haveValue = await this.isAssignedTAExcutiveDropdownContainValue(
         recruitmentInfo.assignedTAExecutive,
       );
+      if (haveValue) {
+        await this.commonPage.selectDropdownValue(
+          'Assigned TA Executive',
+          recruitmentInfo.assignedTAExecutive,
+        );
+      } else {
+        await this.commonPage.selectDropdownWithFirstOption('Assigned TA Executive');
+      }
       //2nd Email
       await this.txt2ndEmail.clear();
       await this.txt2ndEmail.fill(await dataUtils.getEmail());
@@ -225,5 +274,8 @@ export class CreateNewApplicants {
         console.log(e);
       }
     }
+  }
+  async selectInterviewRound(round: string) {
+    await this.commonPage.selectDropdownValue('Interview Round', round);
   }
 }

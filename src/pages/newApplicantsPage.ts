@@ -43,7 +43,6 @@ export class NewApplicants {
     await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector('//table/tbody/tr/td[3]');
   }
-
   async searchApplicantByEmailWithoutResult(email: string) {
     await this.commonPage.clearTextField(this.txtSearchKey);
     await this.txtSearchKey.fill(email);
@@ -55,10 +54,6 @@ export class NewApplicants {
   async clickHamburgerButton() {
     await this.btnHamburgerMenu.scrollIntoViewIfNeeded();
     await this.btnHamburgerMenu.click();
-  }
-  async clickEditApplicantMenuItem() {
-    await this.clickHamburgerButton();
-    await this.btnEditApplicant.click();
   }
 
   async clickCompleteProfileMenuItem() {

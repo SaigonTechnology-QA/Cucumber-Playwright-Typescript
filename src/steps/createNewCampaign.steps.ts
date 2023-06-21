@@ -153,3 +153,51 @@ When(
     await createCampaignPage.clickSave();
   },
 );
+
+When(
+  'I click on {string} button of existing campaign in Draft tab',
+  async function (this: ICustomWorld, btnName: string) {
+    const page = this.page!;
+    const campaignPage = new CampaignPage(page, this);
+    const newCampaignName =
+      process.env.existingCampaignName !== undefined ? process.env.existingCampaignName : '';
+    process.env.newCampaignName = process.env.existingCampaignName;
+
+    await campaignPage.searchCampaignName(newCampaignName);
+    await campaignPage.clickToggleButtonbyCampaignName(newCampaignName, btnName);
+  },
+);
+
+When(
+  'I update new info into existing campaign with all required fields',
+  async function (this: ICustomWorld) {
+    const page = this.page!;
+    const createCampaignPage = new CreateCampaignPage(page, this);
+    await createCampaignPage.updateCampaignWithRequireField();
+    await createCampaignPage.clickSave();
+  },
+);
+
+Then(
+  'the newly updated campaign should be saved in Draft status tab',
+  async function (this: ICustomWorld) {
+    //Go to Campaign page
+    const page = this.page!;
+    const campaignPage = new CampaignPage(page, this);
+    const commonPage = new CommonPage(page, this);
+    await campaignPage.goto();
+
+    const newCampaignName =
+      process.env.existingCampaignName !== undefined ? process.env.existingCampaignName : '';
+    process.env.newCampaignName = process.env.existingCampaignName;
+
+    await campaignPage.searchCampaignName(newCampaignName + '_updated');
+    await commonPage.checkTableCellValueByColumnName(newCampaignName + '_updated', 'Name');
+  },
+);
+
+Then('the "Updated campaign" message should be displayed', async function (this: ICustomWorld) {
+  const page = this.page!;
+  const commonPage = new CommonPage(page, this);
+  await commonPage.checkToastMessageContent('Updated campaign');
+});

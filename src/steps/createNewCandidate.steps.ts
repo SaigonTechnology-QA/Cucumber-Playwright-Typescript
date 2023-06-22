@@ -3,7 +3,7 @@ import { ICustomWorld } from '../support/custom-world';
 import { CreateNewApplicants } from '../pages/createNewCandidate';
 import { CandidatePool } from '../pages/candidatePoolPage';
 import { CommonPage } from '../pages/commonPage';
-import { InterviewProcess } from '../pages/interviewProcess';
+import { InterviewProcessPage } from '../pages/interviewProcessPage';
 import { When, Then } from '@cucumber/cucumber';
 
 When(`I go to New Applicants page`, async function (this: ICustomWorld) {
@@ -21,7 +21,7 @@ When(
   async function (this: ICustomWorld) {
     const page = this.page!;
     const createNewApplicants = new CreateNewApplicants(page, this);
-    await createNewApplicants.createNewApplicants('', 'required', 'file');
+    await createNewApplicants.createNewApplicants('', 'required', 'file', '');
   },
 );
 When(
@@ -38,7 +38,7 @@ When(
     const page = this.page!;
     const commonPage = new CommonPage(page, this);
     const createNewApplicants = new CreateNewApplicants(page, this);
-    await createNewApplicants.createNewApplicants('', 'required', 'file');
+    await createNewApplicants.createNewApplicants('', 'required', 'file', '');
     await createNewApplicants.txtEmail.fill(email);
     await commonPage.clickCommonButton('Save');
   },
@@ -49,7 +49,7 @@ When(
     const page = this.page!;
     const commonPage = new CommonPage(page, this);
     const createNewApplicants = new CreateNewApplicants(page, this);
-    await createNewApplicants.createNewApplicants(fieldName, 'required', 'file');
+    await createNewApplicants.createNewApplicants(fieldName, 'required', 'file', '');
     await commonPage.clickCommonButton('Save');
   },
 );
@@ -76,7 +76,7 @@ When(
   async function (this: ICustomWorld) {
     const page = this.page!;
     const createNewApplicants = new CreateNewApplicants(page, this);
-    await createNewApplicants.createNewApplicants('', 'required', 'link');
+    await createNewApplicants.createNewApplicants('', 'required', 'link', '');
   },
 );
 Then(
@@ -117,7 +117,7 @@ When(
   async function (this: ICustomWorld) {
     const page = this.page!;
     const createNewApplicants = new CreateNewApplicants(page, this);
-    await createNewApplicants.createNewApplicants('', 'full', 'file');
+    await createNewApplicants.createNewApplicants('', 'full', 'file', '');
   },
 );
 Then(
@@ -126,7 +126,7 @@ Then(
     const email =
       process.env.candidateApplicantEmail !== undefined ? process.env.candidateApplicantEmail : '';
     const page = this.page!;
-    const interviewProcess = new InterviewProcess(page, this);
+    const interviewProcess = new InterviewProcessPage(page, this);
     await interviewProcess.goto();
     await interviewProcess.selectCampaign();
     await interviewProcess.searchNewApplicant(email);
@@ -178,13 +178,21 @@ Then(
     await commonPage.checkEmailApplicantAfterSearch(emailCandidate, 0);
   },
 );
+
+When('I search for the newly created Applicant', async function (this: ICustomWorld) {
+  const page = this.page!;
+  const newApplicantPage = new NewApplicants(page, this);
+  const emailApplicant =
+    process.env.candidateApplicantEmail !== undefined ? process.env.candidateApplicantEmail : '';
+  await newApplicantPage.searchNewApplicant(emailApplicant);
+});
 When('I create successfully an applicant', async function (this: ICustomWorld) {
   const page = this.page!;
   const newApplicants = new NewApplicants(page, this);
   await newApplicants.goto();
   await newApplicants.goToNewCandidatePage();
   const createNewApplicants = new CreateNewApplicants(page, this);
-  await createNewApplicants.createNewApplicants('', 'required', 'file');
+  await createNewApplicants.createNewApplicants('', 'required', 'file', '');
   await createNewApplicants.clickOnCommonButton('Save');
 });
 Then(
@@ -195,7 +203,7 @@ Then(
       process.env.candidateApplicantEmail !== undefined ? process.env.candidateApplicantEmail : '';
     const createNewApplicants = new CreateNewApplicants(page, this);
     await createNewApplicants.inputExistedEmail(email);
-    await createNewApplicants.createNewApplicants('Email', 'required', 'file');
+    await createNewApplicants.createNewApplicants('Email', 'required', 'file', '');
   },
 );
 Then('I input existed phone number and other required fields', async function (this: ICustomWorld) {
@@ -203,7 +211,7 @@ Then('I input existed phone number and other required fields', async function (t
   const phoneNumber = process.env.candidatePhone !== undefined ? process.env.candidatePhone : '';
   const createNewApplicants = new CreateNewApplicants(page, this);
   await createNewApplicants.inputExistedPhoneNumber(phoneNumber);
-  await createNewApplicants.createNewApplicants('Phone number', 'required', 'file');
+  await createNewApplicants.createNewApplicants('Phone number', 'required', 'file', '');
 });
 Then(
   'the "Phone number is existed" toast message should be displayed',
@@ -214,5 +222,13 @@ Then(
     const createNewApplicants = new CreateNewApplicants(page, this);
     await createNewApplicants.txtPhoneNumber.scrollIntoViewIfNeeded();
     await commonPage.delay(2000);
+  },
+);
+When(
+  `I input all fields with campaign and with the attachment is a link`,
+  async function (this: ICustomWorld) {
+    const page = this.page!;
+    const createNewApplicants = new CreateNewApplicants(page, this);
+    await createNewApplicants.createNewApplicants('', 'full', 'link', '');
   },
 );

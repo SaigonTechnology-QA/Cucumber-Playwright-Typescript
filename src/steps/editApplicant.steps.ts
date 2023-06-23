@@ -13,7 +13,7 @@ When(
     const createNewApplicants = new CreateNewApplicants(page, this);
     await newApplicants.goto();
     await newApplicants.goToNewCandidatePage();
-    await createNewApplicants.createNewApplicants('', 'required', 'link');
+    await createNewApplicants.createNewApplicants('', 'required', 'link', '');
     await createNewApplicants.clickOnCommonButton('Save & Close');
   },
 );
@@ -54,6 +54,6 @@ Then('the newly updated Applicant should be saved', async function (this: ICusto
   //Search with updated email
   const emailApplicant =
     process.env.candidateEmailUpdate !== undefined ? process.env.candidateEmailUpdate : '';
-  await newApplicants.searchNewApplicant(emailApplicant);
+  await commonPage.searchByNameEmailSocial(emailApplicant);
   await commonPage.checkEmailApplicantAfterSearch(emailApplicant, 1);
 });

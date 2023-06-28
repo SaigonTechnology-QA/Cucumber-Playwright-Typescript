@@ -1,6 +1,7 @@
 import campaignData from '../resources/data/campaign.json';
 import userData from '../resources/data/user.json';
 import candidateData from '../resources/data/candidate.json';
+import changeCampaignModal from '../resources/data/changeCampaignModal.json';
 
 export class DataUtils {
   getCampaignDataByType(type: string) {
@@ -15,6 +16,11 @@ export class DataUtils {
 
   getUserDataByRole(role: string) {
     const extractData = userData.filter((key) => key.role === role);
+
+    return extractData[0];
+  }
+  getChangeCampaignData() {
+    const extractData = changeCampaignModal;
 
     return extractData[0];
   }

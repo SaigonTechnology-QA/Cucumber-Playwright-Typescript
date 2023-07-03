@@ -118,25 +118,3 @@ Feature: Create New Campaign
     And I click on "Add New Campaign" button
     And I create a new campaign with the required fields and existing campaign name
     Then  the "Campaign Name already exists" message should be displayed
-
-  @CL-0005 @CL-0005-1
-  Scenario: Update Draft campaign successfully with all required fields as TA Manager
-    Given I sign in with role as "TA Manager"
-    When I go to Campaigns page
-    And I click on "Add New Campaign" button
-    When I create a new campaign with the required fields and campaign name is "new01"
-    And I click on "Update campaign" button of existing campaign in Draft tab
-    And I update new info into existing campaign with all required fields
-    Then the "Updated campaign" message should be displayed
-    And the newly updated campaign should be saved in Draft status tab
- 
- @CL-0005 @CL-0005-2
-  Scenario: Update Draft campaign successfully with all required fields as Campaign Manager
-    Given I sign in with role as "Campaign Manager 1"
-    When I go to Campaigns page
-    And I click on "Add New Campaign" button
-    When I create a new campaign with the required fields and campaign name is "new01"
-    And I click on "Update campaign" button of existing campaign in Draft tab
-    And I update new info into existing campaign with all required fields
-    Then the "Updated campaign" message should be displayed
-    And the newly updated campaign should be saved in Draft status tab

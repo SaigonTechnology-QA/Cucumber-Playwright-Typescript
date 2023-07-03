@@ -35,7 +35,7 @@ When(
 When(
   `I search for existing a new Applicant without a phone number`,
   async function (this: ICustomWorld) {
-    const existingApplicantWithoutPhone = "hieunguyen22364@gmail.com";
+    const existingApplicantWithoutPhone = 'hieunguyen22364@gmail.com';
     const page = this.page!;
     const newApplicants = new NewApplicants(page, this);
     await newApplicants.searchNewApplicant(existingApplicantWithoutPhone);

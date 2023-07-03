@@ -90,7 +90,7 @@ export class ChangeCampaignPage {
     await this.commonPage.clickCommonButton('Yes');
   }
   async addTAExecutiveFromUserFile(campaignName: string) {
-    await this.campaignPage.clickTabStatusButton('Active');
+    await this.campaignPage.clickTabStatusButton('Pending');
     await this.campaignPage.searchCampaignName(campaignName);
     await this.campaignPage.clickToggleButtonbyCampaignName(campaignName, 'Update campaign');
     const dataUtils = new DataUtils();

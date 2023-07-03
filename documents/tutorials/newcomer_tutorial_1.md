@@ -38,9 +38,3 @@
   - Devtools
   - Playwright Debugger
 - Assertion: https://playwright.dev/docs/test-assertions
-
-### Question
-
-- Syntax in Selenium?
-- How to find element and find elements in Selenium?
-- What is the different between findElement and findElements in Selenium?

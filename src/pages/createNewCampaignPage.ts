@@ -337,4 +337,30 @@ export class CreateCampaignPage {
     await this.commonPage.clearTextField(this.txtKnowledge);
     await this.txtKnowledge.type(campaignInterviewquestionData.knowledge + '_updated');
   }
+  async createNewCampaignWithJSFromUser() {
+    await this.createNewCampaignWithExceptField('');
+    const dataUtils = new DataUtils();
+    const userData = dataUtils.getUserDataByRole('Job Skill Interviewer 1');
+    await this.page
+      .locator(
+        '//label[contains(text(),"Job Skill Interviewer")]/..//div[@class="search-box form-control d-flex"]',
+      )
+      .click();
+    const itemValue = 'auto ' + userData.role;
+    await this.page.locator('//li[normalize-space(text())="' + itemValue + '"]').click();
+    await this.clickSave();
+  }
+  async createNewCampaignWithCampaignManagerFromUser() {
+    await this.createNewCampaignWithExceptField('');
+    const dataUtils = new DataUtils();
+    const userData = dataUtils.getUserDataByRole('Campaign Manager 1');
+    await this.page
+      .locator(
+        '//label[contains(text(),"Manager")]/..//div[@class="search-box form-control d-flex"]',
+      )
+      .click();
+    const itemValue = userData.fullname;
+    await this.page.locator('//li[normalize-space(text())="' + itemValue + '"]').click();
+    await this.clickSave();
+  }
 }

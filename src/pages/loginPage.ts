@@ -41,9 +41,8 @@ export class LoginPage {
     await this.txtOTP.fill(userData.otpCode);
     await this.btnGeneral.click();
 
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForURL('**/scan-cv?showCurrent=true');
     await this.page.waitForLoadState();
-    await this.page.waitForLoadState('domcontentloaded');
   }
   async logOut() {
     await this.txtProfileName.click();

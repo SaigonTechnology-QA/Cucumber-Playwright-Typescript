@@ -8,6 +8,7 @@
 4. Install Playwright:
 
 In VSCode, open Terminal then run below commands:
+
 ```
 npm i -D @playwright/test
 # install supported browsers
@@ -28,17 +29,27 @@ npm install
    `npm run all` or `npm run test`
 
 2. To run specific feature
-   `npm run test <features\featureFile>` or `npx cucumber-js <features\featureFile>` run the single feature
+   `npm run test "<featureFileLocation>"` or `npx cucumber-js <featureFileLocation>` run the single feature
 
-Ex: `npm run test 'features\demo.feature'` or `npm run test features\demo.feature`
+Ex: `npm run test 'features/demo.feature'` or `npm run test features/demo.feature`
 
-3. To run specific tag
-   `npm run test-tag <features\featureFile>`
+3. To run features in specific folder, ex folder `demo`:
+   `npm run test <featureFolderLocation>`
+
+Ex: `npm run test 'features/demo/*'`
+
+4. To run specific tag
+   `npm run test-tag <tagName>`
 
 Ex: `npm run test-tag '@login'`
 
-3. To debug specific tag
-   `npm run debug-tag <features\featureFile>`
+5. To run multiple tags
+   `npm run test-tag <@tagName1 or @tagName2 or @tagName3...`
+
+Ex: `npm run test-tag '@NA-0007 or @NA-0008'`
+
+6. To debug specific tag
+   `npm run debug-tag <tagName>`
 
 Ex: `npm run debug-tag '@login'`
 

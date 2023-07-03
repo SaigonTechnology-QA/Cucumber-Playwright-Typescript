@@ -111,6 +111,7 @@ export class CommonPage {
   }
 
   async checkToastMessageContent(toastMesssage: string) {
+    await this.page.waitForLoadState();
     await expect(await this.toastMesssage).toHaveText(toastMesssage);
   }
   async checkEmailApplicantAfterSearch(email: string, expectedCount: number) {
@@ -271,13 +272,35 @@ export class CommonPage {
     const name = basicInfo.firstName + ' ' + basicInfo.lastName;
     const tdCandidateName = '//table/tbody/tr/td[' + columnIndex + ']';
     await this.page.locator(tdCandidateName).waitFor({ state: 'visible' });
-    await this.page.locator(tdCandidateName).scrollIntoViewIfNeeded;
+    await this.page.locator(tdCandidateName).scrollIntoViewIfNeeded();
     await expect(this.page.locator(tdCandidateName)).toHaveText(name);
+  }
+
+  async checkCandidateEmailInfo(tdIndex: number, aIndex: number, email: string) {
+    const tdCandidateEmail = '//table/tbody/tr/td[' + tdIndex + ']//a[' + aIndex + ']';
+    await this.page.locator(tdCandidateEmail).waitFor({ state: 'visible' });
+    await this.page.locator(tdCandidateEmail).scrollIntoViewIfNeeded();
+    await expect(this.page.locator(tdCandidateEmail)).toHaveText(email);
   }
 
   async clickOnContextHamburgerButton() {
     await this.btnHamburgerMenu.scrollIntoViewIfNeeded();
     await this.btnHamburgerMenu.click();
+  }
+
+  async clickOnContextHamburgerButtonWithDefinedIndex(i: number) {
+    const elements = await this.page.$$('//button[@title="Click to show actions"]');
+
+    if (elements.length > 0) {
+      const nthElement = elements[i];
+      await nthElement.scrollIntoViewIfNeeded();
+
+      await nthElement.click();
+    }
+  }
+  async clickOnFirstContextHamburgerButton() {
+    await this.btnHamburgerMenu.first().scrollIntoViewIfNeeded();
+    await this.btnHamburgerMenu.first().click();
   }
   async clickOnOptionOnContextBurgerMenu(optionName: string) {
     await this.clickOnContextHamburgerButton();
@@ -286,6 +309,19 @@ export class CommonPage {
       .click();
   }
 
+  async clickOnOptionOnFirstContextBurgerMenu(optionName: string) {
+    await this.clickOnFirstContextHamburgerButton();
+    await this.page
+      .locator(replace('//button/span[contains(text(),"@optionName")]', '@optionName', optionName))
+      .click();
+  }
+
+  async clickOnOptionOnContextBurgerMenuWithIndex(optionName: string, i: number) {
+    await this.clickOnContextHamburgerButtonWithDefinedIndex(i - 1);
+    await this.page
+      .locator(replace('//button/span[contains(text(),"@optionName")]', '@optionName', optionName))
+      .click();
+  }
   async searchByNameEmailSocial(email: string) {
     await this.clearTextField(this.txtSearchNameEmailField);
     await this.txtSearchNameEmailField.fill(email);

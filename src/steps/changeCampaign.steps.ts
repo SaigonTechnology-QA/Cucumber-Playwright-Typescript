@@ -235,3 +235,27 @@ When(
     await interviewProcessPage.verifyStatusOfCandidateOnProcessTab('Processing');
   },
 );
+
+When(
+  'I create a new applicant with the first campaign in the Send Offer round of Interview Process page',
+  async function (this: ICustomWorld) {
+    const page = this.page!;
+    const commonPage = new CommonPage(page, this);
+    const newApplicants = new NewApplicants(page, this);
+    const createNewApplicants = new CreateNewApplicants(page, this);
+    await newApplicants.goto();
+    await newApplicants.goToNewCandidatePage();
+    await createNewApplicants.createNewApplicants('', 'required', 'link', '');
+    await commonPage.selectDropdownValue('Campaign', firstCampaignName);
+    await createNewApplicants.selectInterviewRound('Send Offer');
+    applicantEmail =
+      process.env.candidateApplicantEmail !== undefined ? process.env.candidateApplicantEmail : '';
+    await createNewApplicants.clickOnCommonButton('Save & Close');
+  },
+);
+
+When('I click on Send Offer tab', async function (this: ICustomWorld) {
+  const page = this.page!;
+  const interviewProcessPage = new InterviewProcessPage(page, this);
+  await interviewProcessPage.clickOnCampaignProcessTab('Send Offer');
+});

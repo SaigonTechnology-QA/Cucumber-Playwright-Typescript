@@ -51,7 +51,12 @@ Then(
   async function (this: ICustomWorld) {
     const page = this.page!;
     const interviewProcessPage = new InterviewProcessPage(page, this);
-    await interviewProcessPage.verifyInterviewRoundIsDisplay();
+    await interviewProcessPage.verifyRoundsIsDisplay(
+      'Scan CV',
+      'Job Skill Interview',
+      'TA Interview',
+      'Send Offer',
+    );
     await interviewProcessPage.searchNewApplicant(firstApplicantEmail);
     await interviewProcessPage.verifyStatusOfCandidate(4, 'Processing');
   },
@@ -67,7 +72,12 @@ Then(
   async function (this: ICustomWorld) {
     const page = this.page!;
     const interviewProcessPage = new InterviewProcessPage(page, this);
-    await interviewProcessPage.verifyInterviewRoundIsDisplay();
+    await interviewProcessPage.verifyRoundsIsDisplay(
+      'Scan CV',
+      'Job Skill Interview',
+      'TA Interview',
+      'Send Offer',
+    );
   },
 );
 Then(
@@ -99,18 +109,18 @@ When(
   },
 );
 When(
-  'I move the campaign <campaign_name> to Active status and add TA Executive <TAE1>',
+  'I add TA Executive <TAE> and move the campaign <campaign_name> to Active status',
   async function (this: ICustomWorld) {
     const page = this.page!;
     const changeCampaignPage = new ChangeCampaignPage(page, this);
     const commonPage = new CommonPage(page, this);
     //Go to Campaign Page
     await commonPage.goto('campaign');
+    await changeCampaignPage.addTAExecutiveFromUserFile(process.env.newCampaignName as string);
     //Change status from Pending to Active
     await changeCampaignPage.changeCampaignStatusFromPendingToActive(
       process.env.newCampaignName as string,
     );
-    await changeCampaignPage.addTAExecutiveFromUserFile(process.env.newCampaignName as string);
   },
 );
 When(
@@ -142,7 +152,12 @@ Then(
   async function (this: ICustomWorld) {
     const page = this.page!;
     const interviewProcessPage = new InterviewProcessPage(page, this);
-    await interviewProcessPage.verifyInterviewRoundIsDisplay();
+    await interviewProcessPage.verifyRoundsIsDisplay(
+      'Scan CV',
+      'Job Skill Interview',
+      'TA Interview',
+      'Send Offer',
+    );
     await interviewProcessPage.searchNewApplicant(process.env.candidateApplicantEmail as string);
     await interviewProcessPage.verifyStatusOfCandidate(4, 'Processing');
   },
@@ -185,3 +200,86 @@ Then(`I cannot see <campaign_name> in dropdown list`, async function (this: ICus
   const interviewProcessPage = new InterviewProcessPage(page, this);
   await interviewProcessPage.verifyNoCampaignFound();
 });
+
+When(
+  `I create a campaign with the required fields and name <campaign_name> and Job Skill Interviewer <JSI1> and move it to Pending tab`,
+  async function (this: ICustomWorld) {
+    const page = this.page!;
+    const campaignPage = new CampaignPage(page, this);
+    const createCampaignPage = new CreateCampaignPage(page, this);
+    const commonPage = new CommonPage(page, this);
+    await campaignPage.goto();
+    await campaignPage.clickAddNewCampaignButton();
+    await createCampaignPage.createNewCampaignWithJSFromUser();
+    //Move to Pending Tab
+    await campaignPage.searchCampaignName(process.env.newCampaignName as string);
+    await campaignPage.clickToggleButtonbyCampaignName(
+      process.env.newCampaignName as string,
+      'Submit',
+    );
+    await commonPage.clickCommonButton('Yes');
+  },
+);
+When(
+  `I create a new applicant with campaign <campaign_name> in the <Job SKill Interview> round and with status is <Waiting>`,
+  async function (this: ICustomWorld) {
+    const page = this.page!;
+    const newApplicants = new NewApplicants(page, this);
+    const createNewApplicants = new CreateNewApplicants(page, this);
+    await newApplicants.goto();
+    await newApplicants.goToNewCandidatePage();
+    await createNewApplicants.createNewApplicants(
+      '',
+      'full',
+      'link',
+      process.env.newCampaignName as string,
+    );
+    await createNewApplicants.selectInterviewRound('Job Skill Interview');
+    secondApplicantEmail =
+      process.env.candidateApplicantEmail !== undefined ? process.env.candidateApplicantEmail : '';
+    await createNewApplicants.clickOnCommonButton('Save & Close');
+  },
+);
+Then(
+  'I should can see the candidate with status is <Waiting>',
+  async function (this: ICustomWorld) {
+    const page = this.page!;
+    const interviewProcessPage = new InterviewProcessPage(page, this);
+    await interviewProcessPage.searchNewApplicant(secondApplicantEmail);
+    await interviewProcessPage.verifyStatusOfCandidate(8, 'Waiting');
+  },
+);
+
+Then('I should can see rounds: Scan CV, Job Skill Interview', async function (this: ICustomWorld) {
+  const page = this.page!;
+  const interviewProcessPage = new InterviewProcessPage(page, this);
+  await interviewProcessPage.verifyRoundsIsDisplay('Scan CV', 'Job Skill Interview');
+});
+
+When(
+  `I create a campaign with the required fields and name <campaign_name>  and Manager <Campaign Manager 1> and move it to Pending tab`,
+  async function (this: ICustomWorld) {
+    const page = this.page!;
+    const campaignPage = new CampaignPage(page, this);
+    const createCampaignPage = new CreateCampaignPage(page, this);
+    const commonPage = new CommonPage(page, this);
+    await campaignPage.goto();
+    await campaignPage.clickAddNewCampaignButton();
+    await createCampaignPage.createNewCampaignWithCampaignManagerFromUser();
+    //Move to Pending Tab
+    await campaignPage.searchCampaignName(process.env.newCampaignName as string);
+    await campaignPage.clickToggleButtonbyCampaignName(
+      process.env.newCampaignName as string,
+      'Submit',
+    );
+    await commonPage.clickCommonButton('Yes');
+  },
+);
+Then(
+  `I can see campaign <campaign_name> in the "Select Campaign" dropdown`,
+  async function (this: ICustomWorld) {
+    const page = this.page!;
+    const interviewProcessPage = new InterviewProcessPage(page, this);
+    await interviewProcessPage.verifyCampaignIsDisplay(process.env.newCampaignName as string);
+  },
+);

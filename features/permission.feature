@@ -26,7 +26,7 @@ Feature: Permission
         And I create a campaign with the required fields and name <campaign_name> and move it to Pending tab
         And I log out
         And I sign in with role as "TA Manager"
-        And I move the campaign <campaign_name> to Active status and add TA Executive <TAE1>
+        And I add TA Executive <TAE> and move the campaign <campaign_name> to Active status
         And I create a new applicant with campaign <campaign_name> in the <Scan CV> round and with status is <Processing>
         And I log out
         And I sign in with role as "TA Executive"
@@ -40,10 +40,41 @@ Feature: Permission
         And I create a campaign with the required fields and name <campaign_name> and move it to Pending tab
         And I log out
         And I sign in with role as "TA Manager"
-        And I move the campaign <campaign_name> to Active status
+        And I add TA Executive <TAE> and move the campaign <campaign_name> to Active status
         And I create a new applicant with campaign <campaign_name> in the <Scan CV> round and with status is <Processing>
         And I log out
-        And I sign in with role "TA Executive" not belonging to campaign <campaign_name>
+        And I sign in with role "TA Executive 1" not belonging to campaign <campaign_name>
         When I go to Interview Process page
         And I input <campaign_name> in "Select Campaign" dropdown list
         Then I cannot see <campaign_name> in dropdown list
+
+    @IP-0011
+    Scenario: As a Job Skill Interviewer, I would like to see rounds and candidates of my campaigns
+        Given I sign in with role as "Campaign Manager 1"
+        And I create a campaign with the required fields and name <campaign_name> and Job Skill Interviewer <JSI1> and move it to Pending tab
+        And I log out
+        And I sign in with role as "TA Manager"
+        And I move the campaign <campaign_name> to Active status
+        And I create a new applicant with campaign <campaign_name> in the <Job SKill Interview> round and with status is <Waiting>
+        And I log out
+        And I sign in with role as "Job Skill Interviewer 1"
+        When I go to Interview Process page
+        And I select my campaign <campaign_name>
+        And I should can see rounds: Scan CV, Job Skill Interview
+        And I click on <Job Skill Interview> tab
+        Then I should can see the candidate with status is <Waiting>
+
+    @IP-0012
+    Scenario: As Campaign Manager, I would like to see rounds and candidate's status of my campaigns
+        Given I sign in with role as "Campaign Manager 1"
+        And I create a campaign with the required fields and name <campaign_name>  and Manager <Campaign Manager 1> and move it to Pending tab
+        And I log out
+        And I sign in with role as "TA Manager"
+        And I move the campaign <campaign_name> to Active status
+        And I create a new applicant with campaign <campaign_name> in the <Scan CV> round and with status is <Processing>
+        And I log out
+        And I sign in with role as "Campaign Manager 1"
+        When I go to Interview Process page
+        And I can see campaign <campaign_name> in the "Select Campaign" dropdown
+        And I select my campaign <campaign_name>
+        Then I should can see rounds: Scan CV, Job Skill Interview, TA Interview, Send Offer and I can see the candidate with status is <Processing>

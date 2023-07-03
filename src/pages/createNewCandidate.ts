@@ -254,10 +254,7 @@ export class CreateNewApplicants {
       await this.btnSave.scrollIntoViewIfNeeded();
       await this.btnSave.click();
       try {
-        await this.page.waitForEvent('response');
-        await this.page.waitForLoadState('networkidle');
-        await this.page.waitForLoadState();
-        await this.page.waitForLoadState('domcontentloaded');
+        await this.page.waitForSelector('//*[@id="toast-container"]');
       } catch (e) {
         console.log(e);
       }
@@ -266,10 +263,7 @@ export class CreateNewApplicants {
       await this.btnSaveAndClose.scrollIntoViewIfNeeded();
       await this.btnSaveAndClose.click();
       try {
-        await this.page.waitForEvent('response');
-        await this.page.waitForLoadState('networkidle');
-        await this.page.waitForLoadState();
-        await this.page.waitForLoadState('domcontentloaded');
+        await this.page.waitForSelector('//*[@id="toast-container"]');
       } catch (e) {
         console.log(e);
       }

@@ -16,18 +16,25 @@ export class CandidatePool {
     this.btnSearch = page.locator("//button[normalize-space(text())='Search']");
   }
   async goto() {
-    await this.page.waitForLoadState('networkidle');
-    await this.page.waitForLoadState();
-    await this.page.waitForLoadState('domcontentloaded');
     await this.page.goto(config.BASE_URL + 'candidate-pool');
+    await this.page.waitForLoadState();
+    await this.page.waitForSelector('//span[text()="Select Campaign"]');
   }
   async searchCandidate(email: string) {
     await this.txtBasicInfo.clear();
     await this.txtBasicInfo.fill(email);
     await this.btnSearch.click();
-    await this.page.waitForEvent('response');
-    await this.page.waitForLoadState();
-    await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForSelector('//table/tbody/tr/td[2]');
+    await this.page.waitForResponse(
+      (resp) => resp.url().includes('/api/candidate') && resp.status() === 200,
+    );
+  }
+
+  async fillBasicInfo(email: string) {
+    await this.txtBasicInfo.clear();
+    await this.txtBasicInfo.fill(email);
+  }
+
+  async clickOnSearchButton() {
+    await this.btnSearch.click();
   }
 }

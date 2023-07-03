@@ -140,17 +140,12 @@ Then(
 );
 
 When(
-  'I click on "Delete candidate" option in the hamburger menu button',
+  'I click on "Delete candidate" option in the hamburger menu button of an existed candidate',
   async function (this: ICustomWorld) {
     const page = this.page!;
-    const commonPage = new CommonPage(page, this);
-    const emailCandidate =
-      process.env.candidateApplicantEmail !== undefined ? process.env.candidateApplicantEmail : '';
-    const newApplicants = new NewApplicants(page, this);
-    await newApplicants.searchNewApplicant(emailCandidate);
-    await commonPage.clickOnOptionOnContextBurgerMenu('Delete candidate');
-  },
-);
+    const newApplicantPage = new NewApplicants(page, this);
+    await newApplicantPage.clickOnDeleteAnExistedCandidate();
+});
 
 When('I click on "Yes" button in the Confirm Message modal', async function (this: ICustomWorld) {
   const page = this.page!;
@@ -221,7 +216,6 @@ Then(
     await commonPage.checkToastMessageContent('Phone number is existed');
     const createNewApplicants = new CreateNewApplicants(page, this);
     await createNewApplicants.txtPhoneNumber.scrollIntoViewIfNeeded();
-    await commonPage.delay(2000);
   },
 );
 When(

@@ -17,7 +17,9 @@ export class InterviewProcessPage {
   readonly drSelectCampaign: Locator;
   readonly txtSelectCampaign: Locator;
   readonly spanSearchResultItemNotFound: Locator;
+
   commonPage: CommonPage;
+  linkInterviewRound: string;
 
   constructor(page: Page, iciCustomWorld: ICustomWorld) {
     this.page = page;
@@ -31,6 +33,7 @@ export class InterviewProcessPage {
     );
     this.txtSelectCampaign = page.locator('//input[@placeholder="Select campaign"]');
     this.spanSearchResultItemNotFound = page.locator('//li[text()="No result"]');
+    this.linkInterviewRound = '//*[@class="tab-header"]//span[text()="roundName"]';
   }
 
   async selectCampaignOptionOnInterviewProcessPage(campaignName: string) {
@@ -68,10 +71,8 @@ export class InterviewProcessPage {
     await this.commonPage.checkEmailApplicantAfterSearch(candidateEmail, 1);
   }
   async goto() {
-    await this.page.waitForLoadState('networkidle');
-    await this.page.waitForLoadState();
-    await this.page.waitForLoadState('domcontentloaded');
     await this.page.goto(config.BASE_URL + 'interview-process');
+    await this.page.waitForLoadState();
   }
   async selectCampaign() {
     const dataUtils = new DataUtils();
@@ -88,28 +89,8 @@ export class InterviewProcessPage {
   async searchNewApplicant(email: string) {
     await this.txtSearchKey.clear();
     await this.txtSearchKey.fill(email);
-    await this.page.waitForEvent('response');
-    await this.page.waitForLoadState();
     await this.page.waitForLoadState('domcontentloaded');
     await this.commonPage.checkEmailApplicantAfterSearch(email, 1);
-  }
-  async verifyInterviewRoundIsDisplay() {
-    const linkInterviewRound = '//*[@class="tab-header"]//span[text()="roundName"]';
-    const scanCVLocator = replace(linkInterviewRound, 'roundName', 'Scan CV');
-    await expect(this.page.locator(scanCVLocator)).toBeVisible();
-
-    const jobSkillInterviewLocator = replace(
-      linkInterviewRound,
-      'roundName',
-      'Job Skill Interview',
-    );
-    await expect(this.page.locator(jobSkillInterviewLocator)).toBeVisible();
-
-    const tAInterviewLocator = replace(linkInterviewRound, 'roundName', 'TA Interview');
-    await expect(this.page.locator(tAInterviewLocator)).toBeVisible();
-
-    const sendOfferLocator = replace(linkInterviewRound, 'roundName', 'Send Offer');
-    await expect(this.page.locator(sendOfferLocator)).toBeVisible();
   }
   async verifyStatusOfCandidate(columnNumber: number, status: string) {
     const statusLocator = '//tbody/tr/td[' + columnNumber + ']//button';
@@ -125,10 +106,29 @@ export class InterviewProcessPage {
     await expect(this.txtSelectCampaign).toBeVisible();
     await this.txtSelectCampaign.clear();
     await this.txtSelectCampaign.fill(campaignName);
-    await this.page.waitForEvent('response');
     await this.page.waitForLoadState();
   }
   async verifyNoCampaignFound() {
     await expect(this.spanSearchResultItemNotFound).toBeVisible();
+  }
+  async verifyRoundsIsDisplay(...rounds: string[]) {
+    for (const round of rounds) {
+      const roundLocator = replace(this.linkInterviewRound, 'roundName', round);
+      await expect(this.page.locator(roundLocator)).toBeVisible();
+    }
+  }
+
+  async verifyCampaignIsDisplay(campaignName: string) {
+    await this.selectCampaignDropdown.click();
+    await expect(
+      this.page.locator(
+        replace(
+          '//div[@class="dropbox-wrapper"]/ul/li[normalize-space(text())="@campaignName"]',
+          '@campaignName',
+          campaignName,
+        ),
+      ),
+    ).toBeVisible();
+    this.page.locator('//h3[normalize-space(text())="Select Campaign:"]').click();
   }
 }

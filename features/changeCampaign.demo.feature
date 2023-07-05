@@ -1,6 +1,6 @@
 @DemoChangeCampaign @Regression
-Feature: Change Campaign
-  TA Manager can change information of the Recruitment campaign at some Recruitment rounds.
+Feature: Update Recruitment Campaign
+  TA Manager can update the information of a Recruitment campaign at a specific Recruitment rounds.
 
   Background: Create 02 campaigns before changing
     Given I sign in with role as "Campaign Manager 1"

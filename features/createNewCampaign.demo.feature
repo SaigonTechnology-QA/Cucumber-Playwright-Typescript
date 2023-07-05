@@ -1,6 +1,6 @@
 @DemoCreateNewCampaign @Regression
-Feature: Create New Campaign
-  TA Manager/Users could create a Recruitment campaign whenever there's a resource request.
+Feature: Create New Recruitment Campaign
+  TA Manager can create a Recruitment campaign whenever there's a resource request.
 
   Background: TA Manager Access To The Recruitment Page
     Given I sign in with role as "TA Manager"

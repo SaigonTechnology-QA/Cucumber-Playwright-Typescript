@@ -95,6 +95,16 @@ To stop the feature, you can add the `Then debug` step inside your feature. It w
 
 - run the command `npm run report`.
 
-## To view allure report
+## Using Allure Docker Service For Report
+- Execute Allure Docker Service from this repository
+```sh
+docker-compose up -d allure allure-ui
+```
+- Verify if Allure API is working. Go to -> http://localhost:5050/allure-docker-service/latest-report
+- Verify if Allure UI is working. Go to -> http://localhost:5252/allure-docker-service-ui/
 
-- run the command `npm run allure`.
+- Each time you run tests, the Allure report will be updated.
+Execute tests:
+```sh
+ npm run-script allure-test
+ ```

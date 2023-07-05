@@ -10,7 +10,7 @@ Feature: Create New Campaign
     And I create a new campaign with the required fields
     Then the newly created campaign should be displayed on Campaigns page in Draft status tab
 
-  @DCL-0002
+  @DCL-0002 
   Scenario: Add new campaign with full fields as TA Manager
     Given I sign in with role as "TA Manager"
     Then The Recruitment Page Should Be Displayed

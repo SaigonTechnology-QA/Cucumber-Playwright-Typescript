@@ -18,7 +18,7 @@ Feature: Change Campaign
     And I click on Confirm button in Change Campaign modal
     Then the "Campaign changed" message should be displayed and the candidate should be moved to the second campaign and in <Job Skill Interview> tab with <Waiting> status
 
-  @DIP-0002
+  @DIP-0002 @Smoke
   Scenario: Change campaign of a candidate in the Job Skill Interview round as TA Manager
     Given I sign in with role as "Campaign Manager 1"
     And I create a first campaign with the required fields and move it to Pending tab
@@ -36,7 +36,7 @@ Feature: Change Campaign
     And I click on Confirm button in Change Campaign modal
     Then the "Campaign changed" message should be displayed and the candidate should be moved to the second campaign and in <Scan CV> tab with <Processing> status
 
-  @DIP-0003
+  @DIP-0003 @Sanity
   Scenario: Change campaign of a candidate in the TA Interview round as TA Manager
     Given I sign in with role as "Campaign Manager 1"
     And I create a first campaign with the required fields and move it to Pending tab

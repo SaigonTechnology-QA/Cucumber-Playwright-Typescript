@@ -1,13 +1,16 @@
 @DemoChangeCampaign @Regression
 Feature: Change Campaign
+  TA Manager can change information of the Recruitment campaign at some Recruitment rounds.
 
-  @DIP-0001 @Smoke
-  Scenario: Change campaign of a candidate in the round Scan CV as TA Manager
+  Background: Create 02 campaigns before changing
     Given I sign in with role as "Campaign Manager 1"
     And I create a first campaign with the required fields and move it to Pending tab
     And I create a second campaign with the required fields and move it to Pending tab
     And I log out
     And I sign in with role as "TA Manager"
+
+  @DIP-0001 @Sanity
+  Scenario: TA Manager Should Change Recruitment Campaign Successfully At The Scan CV Round
     And I move the first campaign to Active status
     And I move the second campaign to Active status
     And I create a new applicant with the first campaign in the Scan CV round of Interview Process page
@@ -18,13 +21,8 @@ Feature: Change Campaign
     And I click on Confirm button in Change Campaign modal
     Then the "Campaign changed" message should be displayed and the candidate should be moved to the second campaign and in <Job Skill Interview> tab with <Waiting> status
 
-  @DIP-0002 @Smoke
-  Scenario: Change campaign of a candidate in the Job Skill Interview round as TA Manager
-    Given I sign in with role as "Campaign Manager 1"
-    And I create a first campaign with the required fields and move it to Pending tab
-    And I create a second campaign with the required fields and move it to Pending tab
-    And I log out
-    And I sign in with role as "TA Manager"
+  @DIP-0002
+  Scenario: TA Manager Should Change Recruitment Campaign Successfully At The Job Skill Interview Round
     And I move the first campaign to Active status
     And I move the second campaign to Active status
     And I create a new applicant with the first campaign in the Job Skill Interview round of Interview Process page
@@ -36,13 +34,8 @@ Feature: Change Campaign
     And I click on Confirm button in Change Campaign modal
     Then the "Campaign changed" message should be displayed and the candidate should be moved to the second campaign and in <Scan CV> tab with <Processing> status
 
-  @DIP-0003 @Sanity
-  Scenario: Change campaign of a candidate in the TA Interview round as TA Manager
-    Given I sign in with role as "Campaign Manager 1"
-    And I create a first campaign with the required fields and move it to Pending tab
-    And I create a second campaign with the required fields and move it to Pending tab
-    And I log out
-    And I sign in with role as "TA Manager"
+  @DIP-0003
+  Scenario: TA Manager Should Change Recruitment Campaign Successfully At The TA Interview Round
     And I move the first campaign to Active status
     And I move the second campaign to Active status
     And I create a new applicant with the first campaign in the TA Interview round of Interview Process page

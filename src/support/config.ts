@@ -19,7 +19,7 @@ export const config = {
   browser: process.env.BROWSER || 'chromium',
   browserOptions,
   alwaysScreenshot,
-  BASE_URL: 'https://uat.recruitment.saigontechnology.vn/',
+  BASE_URL: `https://${process.env.TEST_ENV}.recruitment.saigontechnology.vn/`,
   IMG_THRESHOLD: { threshold: 0.4 },
   UPLOAD_FOLDER: 'src/resources/uploadFiles',
 };
